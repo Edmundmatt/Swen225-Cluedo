@@ -209,6 +209,17 @@ public class Board
 	return null;
   }
 
+  public Cell findWeapon (Weapon w) {
+	  for (int row = 0 ; row < 25; row++) {
+	    	for (int col = 0; col < 24; col++) {
+	    		if (board[row][col].getWeapon() == w) {
+	    			return board[row][col];
+	    		}
+	    	}
+	    }
+	return null;
+  }
+
 
   // line 7 "model.ump"
   public Cell findCell(int x, int y){
@@ -223,6 +234,22 @@ public class Board
 	  ArrayList<Room> randomRooms = new ArrayList<Room>(rooms);
 	  Collections.shuffle(randomRooms);
 	  return randomRooms;
+  }
+
+  public void movePlayerToCell(Player p, Cell c) {
+	  if (c.getPlayer() == null) {
+		  Cell originalPos = findPlayer(p);
+		  c.setPlayer(p);
+		  originalPos.setPlayer(null);
+	  }
+  }
+
+  public void moveWeaponToCell(Weapon w, Cell c) {
+	  if (c.getWeapon() == null) {
+		  Cell originalPos = findWeapon(w);
+		  c.setWeapon(w);
+		  originalPos.setWeapon(null);
+	  }
   }
 
   public Cell[][] retrieveBoard(){

@@ -41,4 +41,12 @@ public void setPlayersCards(List<Card> playersCards) {
 	this.playersCards = playersCards;
 }
 
+public String playersCardsToString() {
+	String out = "";
+	for(Card c : playersCards) {
+		out = out + c.toString() + "\n";
+	}
+	return out;
+}
+
 }

@@ -76,4 +76,5 @@ public class Room
             "name" + ":" + getName()+ "]" + System.getProperties().getProperty("line.separator") +
             "  " + "cellList" + "=" + (getCellList() != null ? !getCellList().equals(this)  ? getCellList().toString().replaceAll("  ","    ") : "this" : "null");
   }
+
 }
