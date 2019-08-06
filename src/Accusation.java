@@ -12,6 +12,8 @@ public class Accusation {
 		accusation = new ArrayList<Card>();
 	}
 	
+	/*Allows the player to make a final accusation for solution cards. Returns a List of Cards to be compared to the solution
+	 * cards.*/
 	public List<Card> makeAccusation() {
 		accusation.clear();
 		System.out.println("Player " + p.toString() + " you are making a final accusation.\n");

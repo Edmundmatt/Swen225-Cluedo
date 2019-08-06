@@ -220,7 +220,7 @@ public class Tests {
 					assertEquals(expected, board.toString());
 				}
 
-			//Tests that player can't move into other player
+			//Tests that player can't move after accusation
 			public @Test void test_10() {
 				Board board = new Board();
 				board.buildBoard();
@@ -256,5 +256,6 @@ public class Tests {
 						"_______#_##______##_##______";
 					assertEquals(expected, board.toString());
 				}
+			
 
 	}

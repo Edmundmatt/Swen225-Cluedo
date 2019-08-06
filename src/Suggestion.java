@@ -12,6 +12,7 @@ public class Suggestion {
 		suggestion = new ArrayList<Card>();
 	}
 	
+	/*Allows the player to input a suggestion from the given cards, teleports the suggestion weapon and player to this player's room*/
 	public void makeSuggestion(Room room) {
 		suggestion.clear();
 		Room curRoom = Game.getBoard().findPlayer(p).getRoom();
@@ -72,6 +73,7 @@ public class Suggestion {
 		refuteSuggestion();
 	}
 
+	/*Allows all other players to refute the suggestion the player has given*/
 	public void refuteSuggestion() {
 		for(Player player : Game.getPlayers()) {
 			if(!player.equals(p)) {
@@ -103,6 +105,7 @@ public class Suggestion {
 		}
 	}
 	
+	/*Returns any cards the player has that were in the suggestion as a String*/
 	public String refuteCards(Player player) {
 		List<Card> matches = new ArrayList<Card>();
 		for(Card c : player.getPlayersCards()) {
@@ -115,6 +118,7 @@ public class Suggestion {
 		return cardsListToString(matches);
 	}
 
+	/*Takes a lust of cards, returns as a String*/
 	public String cardsListToString(List<Card> list) {
 		String out = "";
 		for(Card c : list) {
@@ -123,6 +127,7 @@ public class Suggestion {
 		return out;
 	}
 
+	/*Checks that an input is a valid card*/
 	public boolean correctCard(String input, List<Card> list) {
 		for(Card c : list) {
 			if(input.equalsIgnoreCase(c.stringCheck())) {

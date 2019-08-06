@@ -36,6 +36,7 @@ public class Board
     }
   }
 
+  /*Draws the board out in the console*/
   public void draw() {
 	  for (int row = 0 ; row < 25; row++) {
 		  String rowSoFar = "";
@@ -56,6 +57,7 @@ public class Board
 	  board[row][col].setWeapon(w);
   }
 
+  /*Moves the player one cell in the indicated direction*/
   public void movePlayer (Player p, String dir) {
 	  Cell c = findPlayer(p);
 	  if (c != null) {
@@ -78,6 +80,7 @@ public class Board
 	  }
   }
 
+  /*Checks if the player can move in an indicated direction*/
   public boolean canMove(Player p, String dir) {
 	  Cell c = findPlayer(p);
 	  if (c != null) {
@@ -109,6 +112,7 @@ public class Board
 	  return false;
   }
 
+  /*Sets up the board and all of the room positions*/
   public void buildBoard() {
 	  Room kitchen = new Room("kitchen");
 	  rooms.add(kitchen);
@@ -199,9 +203,10 @@ public class Board
   	}
   }
 
+  /*Return the cell a player is located in on the board*/
   public Cell findPlayer(Player p) {
 	  for (int row = 0 ; row < 25; row++) {
-	    	for (int col = 0; col < 24; col++) {
+	    	for (int col = 0; col < 28; col++) {
 	    		if (board[row][col].getPlayer() == p) {
 	    			return board[row][col];
 	    		}
@@ -209,10 +214,11 @@ public class Board
 	    }
 	return null;
   }
-
+  
+  /*Return the cell a weapon is located in on the board*/
   public Cell findWeapon (Weapon w) {
 	  for (int row = 0 ; row < 25; row++) {
-	    	for (int col = 0; col < 24; col++) {
+	    	for (int col = 0; col < 28; col++) {
 	    		if (board[row][col].getWeapon() == w) {
 	    			return board[row][col];
 	    		}
@@ -222,7 +228,6 @@ public class Board
   }
 
 
-  // line 7 "model.ump"
   public Cell findCell(int x, int y){
 	return board[x][y];
   }

@@ -17,6 +17,7 @@ public class Player
   private List<Game> games;
   private List<Card> playersCards;
   private String name;
+  private boolean skip;
 
   //------------------------
   // CONSTRUCTOR
@@ -24,30 +25,37 @@ public class Player
 
   public Player(String name)
   {
-    games = new ArrayList<Game>();
-    setPlayersCards(new ArrayList<Card>());
-    this.name = name;
+	  games = new ArrayList<Game>();
+	  setPlayersCards(new ArrayList<Card>());
+	  this.name = name;
+	  skip = false;
   }
 
- public String toString() {
-	 return this.name;
- }
+  public String toString() {
+	  return this.name;
+  }
 
-public List<Card> getPlayersCards() {
-	return playersCards;
-}
+  public List<Card> getPlayersCards() {
+	  return playersCards;
+  }
 
-public void setPlayersCards(List<Card> playersCards) {
-	this.playersCards = playersCards;
-}
+  public void setPlayersCards(List<Card> playersCards) {
+	  this.playersCards = playersCards;
+  }
 
-public String playersCardsToString() {
-	String out = "";
-	for(Card c : playersCards) {
-		out = out + c.toString() + "\n";
-	}
-	return out;
-}
+  public String playersCardsToString() {
+	  String out = "";
+	  for(Card c : playersCards) {
+		  out = out + c.toString() + "\n";
+	  }
+	  return out;
+  }
 
-
+  public boolean getSkip() {
+	  return skip;
+  }
+  
+  public void setSkip(boolean b) {
+	  skip = b;
+  }
 }

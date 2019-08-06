@@ -10,7 +10,8 @@ public class Game
 {
 	public static void main(String[] args) {
 		Game g = new Game();
-
+		
+		//Loop to to ensure a correct number of players is inputted into the game
 		while (true){
 		int playerCount = 0;
 		Scanner inputReader = new Scanner(System.in);
@@ -26,16 +27,6 @@ public class Game
 		}
 
 		runTurn();
-
-//		while(true) {
-//			String input = null;
-//			System.out.println("please enter a direction (north etc.)" );
-//			Scanner inputReader = new Scanner(System.in);
-//			input = inputReader.nextLine();
-//			board.movePlayer(p, input);
-//			board.draw();
-//		}
-
 	}
 
   //------------------------
@@ -59,77 +50,87 @@ public class Game
   //------------------------
 
   public Game(){
-   // playerDecks = aPlayerDecks;
     playerTurn = 1;
     playerList = new ArrayList<Player>();
     weaponList = new ArrayList<Weapon>();
     roomList = new ArrayList<Room>();
   }
 
-
+  /*Random dice rolling*/
   public static int rollDice() {
 	  Random random = new Random();
 	  return (int)(Math. random()*12+1);
   }
-
+  
+  /*A main method that loop through turns of all players, taking inputs and calling other methods to run the game.*/
   public static void runTurn() {
 		 while(true) {
-		  System.out.println("It's Player " + playerTurn + "'s turn! (your character is " + playerList.get(playerTurn-1).toString() + ")");
-		  Player p = playerList.get(playerTurn-1);
-		  System.out.println("Player " + playerTurn + "'s cards: ");
-		  System.out.println(p.playersCardsToString());
-		  int moves = rollDice();
-		  System.out.println("Dice roll: " + moves);
+			 Player p = playerList.get(playerTurn-1);
+			 //If a player has already made an accusation - skip turn
+			 if(!p.getSkip()) {
+				 System.out.println("It's Player " + p + "'s turn! (your character is " + playerList.get(playerTurn-1).toString() + ")");
+				 System.out.println("Player " + p + "'s cards: ");
+				 System.out.println(p.playersCardsToString());
+				 int moves = rollDice();
+				 System.out.println("Dice roll: " + moves);
 
-		  while (moves > 0) {
-			  if (board.findPlayer(p).getRoom()==null) {
-			  System.out.println("You have " + moves + " moves left. Please enter a direction to move: (north etc)");
-			  System.out.println("Or make an accusation with the command 'accuse'.");
-			  }
-			  Scanner inputReader = new Scanner(System.in);
-			  String input = inputReader.nextLine();
-			  if (input.equals("suggest")) {
-				  if (board.findPlayer(p).getRoom() == null) {
-					  System.out.println("You must be in a room to make a suggestion!");
-				  } else {
-					  suggestion = new Suggestion(p);
-					  suggestion.makeSuggestion(board.findPlayer(p).getRoom());
-					  nextPlayerTurn();
-				  }
-			  } else if (input.equals("accuse")) {
-				  accusation = new Accusation(p);
-				  List<Card> accuseAttempt = accusation.makeAccusation();
-				  if(solution.equals(accuseAttempt)) {
-					  gameOver(p);
-					  inputReader.close();
-					  return;
-				  }else {
-					  playerList.remove(p);
-					  inputReader.close();
-					  nextPlayerTurn();
-				  }
-			  } else if (board.canMove(p, input)){
-				  board.movePlayer(p, input);
-				  board.draw();
-				  if (board.findPlayer(p).getRoom()==null) {
-					  moves--;
-				  } else {
-					  System.out.println("You're currently in the " + board.findPlayer(p).getRoom().getName() +".");
-					  System.out.println("You can move freely within the room - please enter a direction.");
-					  System.out.println("Or you can make a suggestion with the command 'suggest'.\n");
-				  }
-			  }
-		  }
+				 while (moves > 0) {
+					 if (board.findPlayer(p).getRoom()==null) {
+						 System.out.println("You have " + moves + " moves left. Please enter a direction to move: (north etc)");
+						 System.out.println("Or make an accusation with the command 'accuse'.");
+					 }
+					 Scanner inputReader = new Scanner(System.in);
+					 String input = inputReader.nextLine();
+					 if (input.equals("suggest")) {
+						 if (board.findPlayer(p).getRoom() == null) {
+							 System.out.println("You must be in a room to make a suggestion!");
+						 } else {
+							 suggestion = new Suggestion(p);
+							 suggestion.makeSuggestion(board.findPlayer(p).getRoom());
+							 nextPlayerTurn();
+						 }
+					 } else if (input.equals("accuse")) {
+						 accusation = new Accusation(p);
+						 List<Card> accuseAttempt = accusation.makeAccusation();
+						 if(solution.equals(accuseAttempt)) {
+							 gameOver(p);
+							 return;
+						 }else {
+							 System.out.println("Accuse attempt failure");
+							 System.out.println("Player " + p + " can no longer make suggestions or accusations!\n");
+							 p.setSkip(true);
+							 nextPlayerTurn();
+
+						 }
+					 } else if (board.canMove(p, input)){
+						 board.movePlayer(p, input);
+						 board.draw();
+						 if (board.findPlayer(p).getRoom()==null) {
+							 moves--;
+						 } else {
+							 System.out.println("You're currently in the " + board.findPlayer(p).getRoom().getName() +".");
+							 System.out.println("You can move freely within the room - please enter a direction.");
+							 System.out.println("Or you can make a suggestion with the command 'suggest'.\n");
+						 }
+					 }
+				 }
+			 }
 		  
+//		  playerTurn++;
+//			if (playerTurn > playerList.size()) {
+//				playerTurn = 1;
+//			}
 		  nextPlayerTurn();
 	 }
   }
   
+  /*Method called when the game has finished*/
   public static void gameOver(Player p) {
 	  System.out.println("Nice work! That's the correct solution!\n");
 	  System.out.println("Player " + p + " wins the game!");
   }
   
+  /*Continue to the next player's turn*/
   public static void nextPlayerTurn() {
 	  playerTurn++;
 		if (playerTurn > playerList.size()) {
@@ -137,10 +138,11 @@ public class Game
 		}
 		runTurn();
   }
-
-  // line 70 "model.ump"
+  
+  /*Initialises much of the game elements*/
    public static void initialise(int playerCount){
 	    board = new Board();
+	    //Create new players add add them to the board
 		Player p1 = new Player("S"); //Miss Scarlett
 		playerList.add(p1);
 		Player p2 = new Player("M"); //Colonel Mustard
@@ -169,11 +171,13 @@ public class Game
 		for (Room r : board.getRooms()) {
 			roomList.add(r);
 		}
+		//Create all the cards and weapons
 		generateCards();
 		initialiseWeapons();
 		board.draw();
   }
-
+   
+   /*Creates all the weapons in the game and adds them to the board in a random place*/
    public static void initialiseWeapons() {
 	   Weapon candlestick = new Weapon("c");
 	   weaponList.add(candlestick);
@@ -201,7 +205,7 @@ public class Game
 
    }
 
-   //Matt added this method
+   /*Create Lists of the different cards from enum*/
    public static void generateCards() {
 	  List<Card> rCards = getRoomCards();
 	  List<Card> wCards = getWeapCards();
@@ -222,7 +226,7 @@ public class Game
 	   return new LinkedList<Card>(Arrays.asList(CharacterCard.values()));
    }
    
-   //Matt added this method
+   /*Randomly assign a solution to the game and attribute the rest of the cards to the players hands*/
    public  static void distributeCards(List<Card> rCards, List<Card> wCards, List<Card> cCards) {
  	  //Random solution
  	  solution = new ArrayList<Card>();
@@ -271,7 +275,7 @@ public class Game
  	  }
    }
    
-   //Matt added - function to get random element from List
+   //Return a random Card from a list
    public static Card getRandCard(List<Card> list) {
  	  Random rand = new Random();
  	  return list.get(rand.nextInt(list.size()));
@@ -285,11 +289,13 @@ public class Game
 	   return Game.playerList;
    }
    
+   /*Moves a player to a random free cell in a room*/
    public static void movePlayerToRoom(Player p, Room r) {
 	   Cell newCell = r.getRandomFreeCell();
 	   board.movePlayerToCell(p, newCell);
    }
 
+   /*Moves a weapon to a random free cell in a room*/
    public static void moveWeaponToRoom(Weapon w, Room r) {
 	   Cell newCell = r.getRandomFreeCell();
 	   board.moveWeaponToCell(w, newCell);
