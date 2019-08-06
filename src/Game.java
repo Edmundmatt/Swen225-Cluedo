@@ -10,7 +10,7 @@ public class Game
 {
 	public static void main(String[] args) {
 		Game g = new Game();
-		
+
 		while (true){
 		int playerCount = 0;
 		Scanner inputReader = new Scanner(System.in);
@@ -24,8 +24,8 @@ public class Game
 		}
 		System.out.println("Please enter a number between 3 and 6!");
 		}
-		
-			runTurn();
+
+		runTurn();
 
 //		while(true) {
 //			String input = null;
@@ -35,7 +35,7 @@ public class Game
 //			board.movePlayer(p, input);
 //			board.draw();
 //		}
-		
+
 	}
 
   //------------------------
@@ -69,27 +69,34 @@ public class Game
 	  Random random = new Random();
 	  return (int)(Math. random()*6+1);
   }
-  
+
   public static void runTurn() {
 	 while(true) {
-	  System.out.println("It's Player " + playerTurn + "'s turn! (your character is " + playerList.get(playerTurn-1).toString() + ")"); 
+	  System.out.println("It's Player " + playerTurn + "'s turn! (your character is " + playerList.get(playerTurn-1).toString() + ")");
 	  Player p = playerList.get(playerTurn-1);
 	  int moves = rollDice();
 	  System.out.println("Dice roll: " + moves);
-	  
+
 	  while (moves > 0) {
+		  if (board.findPlayer(p).getRoom()==null) {
 		  System.out.println("You have " + moves + " moves left. Please enter a direction to move: (north etc)");
+		  }
 		  Scanner inputReader = new Scanner(System.in);
 		  String input = inputReader.nextLine();
 		  if (board.canMove(p, input)){
 			  board.movePlayer(p, input);
 			  board.draw();
-			  moves--;
-		  } 
+			  if (board.findPlayer(p).getRoom()==null) {
+				  moves--;
+			  } else {
+				  System.out.println("You're currently in the " + board.findPlayer(p).getRoom().getName() +".");
+				  System.out.println("You can move freely within the room - please enter a direction.");
+			  }
+		  }
 	  }
-	  
-	  
-	  
+
+
+
 	  playerTurn++;
 		if (playerTurn > playerList.size()) {
 			playerTurn = 1;
@@ -113,7 +120,7 @@ public class Game
 			Player p4 = new Player("G"); //Mr. Green
 			board.setPlayer(p4, 0, 17);
 			playerList.add(p4);
-		} 
+		}
 		if (playerCount > 4) {
 			Player p5 = new Player("P"); //Mrs. Peacock
 			board.setPlayer(p5, 5, 27);
@@ -131,7 +138,7 @@ public class Game
 		initialiseWeapons();
 		board.draw();
   }
-   
+
    public static void initialiseWeapons() {
 	   Weapon candlestick = new Weapon("c");
 	   weaponList.add(candlestick);
@@ -145,20 +152,20 @@ public class Game
 	   weaponList.add(rope);
 	   Weapon spanner = new Weapon("s");
 	   weaponList.add(spanner);
-	   
+
 	   ArrayList<Weapon> tempWeaponList = new ArrayList<Weapon>(weaponList);
 	   Collections.shuffle(tempWeaponList);
-	   
+
 	   ArrayList<Room> randomRooms = board.getRandomRooms();
 	   int index = 0;
-	   
+
 	   for (Weapon w : tempWeaponList) {
 		   randomRooms.get(index).getRandomCell().setWeapon(w);
 		   index++;
 	   }
-	  
+
    }
-   
+
    //Matt added this method
    public void generateCards() {
  	  List<Card> rCards = Arrays.asList(RoomCard.values());
@@ -166,7 +173,7 @@ public class Game
  	  List<Card> cCards = Arrays.asList(CharacterCard.values());
  	  distributeCards(rCards, wCards, cCards);
    }
-   
+
    //Matt added this method
    public void distributeCards(List<Card> rCards, List<Card> wCards, List<Card> cCards) {
  	  //Random solution
@@ -183,7 +190,7 @@ public class Game
  	  Card randChar = getRandCard(cCards);
  	  solution.add(randChar);
  	  cCards.remove(randChar);
- 	  
+
  	  //Rest of cards
  	  while(!rCards.isEmpty() && !wCards.isEmpty() && !cCards.isEmpty()) {
  		  for(Player p : playerList) {
@@ -202,11 +209,11 @@ public class Game
  				  p.getPlayersCards().add(randChar);
  				  cCards.remove(randChar);
  			  }
- 			  
+
  		  }
  	  }
    }
-   
+
    //Matt added - function to get random element from List
    public Card getRandCard(List<Card> list) {
  	  Random rand = new Random();

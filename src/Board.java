@@ -27,7 +27,7 @@ public class Board
   public Board()
   {
 	rooms = new ArrayList<Room>();
-	
+
     board = new Cell[25][28];
     for (int row = 0 ; row < 25; row++) {
     	for (int col = 0; col < 28; col++) {
@@ -35,7 +35,7 @@ public class Board
     	}
     }
   }
-  
+
   public void draw() {
 	  for (int row = 0 ; row < 25; row++) {
 		  String rowSoFar = "";
@@ -46,21 +46,21 @@ public class Board
 	    	System.out.println(rowSoFar);
 	    }
   }
-  
+
   public void setPlayer(Player p, int row, int col) {
 	  board[row][col].setPlayer(p);
   }
-  
+
   public void setWeapon(Weapon w, int row, int col) {
 	  board[row][col].setWeapon(w);
   }
-  
+
   public void movePlayer (Player p, String dir) {
 	  Cell c = findPlayer(p);
 	  if (c != null) {
 		  int x = c.getX();
 		  int y = c.getY();
-		  
+
 		  if (dir.equals("north") && x > 0 && !board[x-1][y].isWall()) {
 			  board[x-1][y].setPlayer(c.getPlayer());
 			  c.setPlayer(null);
@@ -76,13 +76,13 @@ public class Board
 		  }
 	  }
   }
-  
+
   public boolean canMove(Player p, String dir) {
 	  Cell c = findPlayer(p);
 	  if (c != null) {
 		  int x = c.getX();
 		  int y = c.getY();
-		  
+
 		  if (dir.equals("north") && x > 0 && !board[x-1][y].isWall()) {
 			  Cell next = board[x-1][y];
 			  if (!next.isWall() && next.getPlayer() == null) {
@@ -107,7 +107,7 @@ public class Board
 	  }
 	  return false;
   }
-  
+
   public void buildBoard() {
 	  Room kitchen = new Room("kitchen");
 	  rooms.add(kitchen);
@@ -127,8 +127,8 @@ public class Board
 	  rooms.add(hall);
 	  Room study = new Room("study");
 	  rooms.add(study);
-	  
-  String input = 
+
+  String input =
     "111111##___#2222#___##333333"+
 	"111111#___#222222#___#333333"+ //y-29 x-28
 	"111111#___#222222#___#333333"+
@@ -157,38 +157,47 @@ public class Board
 
   	int row = 0;
   	int col = 0;
-  	
+
   	for (char c : input.toCharArray()) {
   		if (c == '#') {
   			board[row][col].setWall(true);
   		} else if (c == '1') {
   			kitchen.addCell(board[row][col]);
+  			board[row][col].setRoom(kitchen);
   		} else if (c == '2') {
   			ballRoom.addCell(board[row][col]);
+  			board[row][col].setRoom(ballRoom);
   		} else if (c == '3') {
   			conservatory.addCell(board[row][col]);
+  			board[row][col].setRoom(conservatory);
   		} else if (c == '4') {
   			diningRoom.addCell(board[row][col]);
+  			board[row][col].setRoom(diningRoom);
   		} else if (c == '5') {
   			billiardRoom.addCell(board[row][col]);
+  			board[row][col].setRoom(billiardRoom);
   		} else if (c == '6') {
   			library.addCell(board[row][col]);
+  			board[row][col].setRoom(library);
   		} else if (c == '7') {
   			lounge.addCell(board[row][col]);
+  			board[row][col].setRoom(lounge);
   		} else if (c == '8') {
   			hall.addCell(board[row][col]);
+  			board[row][col].setRoom(hall);
   		} else if (c == '9') {
   			study.addCell(board[row][col]);
+  			board[row][col].setRoom(study);
   		}
-  		
-  		col++; 
+
+  		col++;
   		if (col >= 28) {
   			col = 0;
   			row++;
   		}
   	}
   }
-  
+
   public Cell findPlayer(Player p) {
 	  for (int row = 0 ; row < 25; row++) {
 	    	for (int col = 0; col < 24; col++) {
@@ -205,17 +214,17 @@ public class Board
   public Cell findCell(int x, int y){
 	return board[x][y];
   }
-  
+
   public List<Room> getRooms(){
 	  return this.rooms;
   }
-  
+
   public ArrayList<Room> getRandomRooms() {
 	  ArrayList<Room> randomRooms = new ArrayList<Room>(rooms);
 	  Collections.shuffle(randomRooms);
 	  return randomRooms;
   }
-   
+
   public Cell[][] retrieveBoard(){
 	  return board;
   }

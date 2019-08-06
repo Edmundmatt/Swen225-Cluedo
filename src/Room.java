@@ -49,18 +49,24 @@ public class Room
   {
     return cellList;
   }
-  
+
   public Cell getRandomCell() {
 	  int randIndex = (int)Math. random()*cellList.size();
 	  return cellList.get(randIndex);
   }
-  public void addCell(Cell c) {
-	  cellList.add(c);
+
+  public Cell getRandomFreeCell() {
+	  while(true) {
+	  int randIndex = (int)Math. random()*cellList.size();
+	  if (cellList.get(randIndex).getWeapon() == null && cellList.get(randIndex).getPlayer() == null){
+		  return cellList.get(randIndex);
+	  }
+	  }
+
   }
 
-  // line 30 "model.ump"
-   public void retrieveContents(){
-    
+  public void addCell(Cell c) {
+	  cellList.add(c);
   }
 
 

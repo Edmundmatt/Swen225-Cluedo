@@ -19,6 +19,7 @@ public class Cell
   private int x;
   private int y;
   private boolean isWall;
+  private Room room;
 
 
   //------------------------
@@ -32,6 +33,7 @@ public class Cell
     x = aX;
     y = aY;
     isWall = false;
+    room = null;
   }
 
   //------------------------
@@ -45,11 +47,11 @@ public class Cell
     wasSet = true;
     return wasSet;
   }
-  
+
   public void setWall(boolean bool) {
 	  isWall = bool;
   }
-  
+
   public boolean isWall() {
 	return isWall;
   }
@@ -97,9 +99,14 @@ public class Cell
   {
     return y;
   }
-  
-  
 
+  public void setRoom(Room r) {
+	  this.room = r;
+  }
+
+  public Room getRoom() {
+	  return this.room;
+  }
 
   public String toString()
   {
