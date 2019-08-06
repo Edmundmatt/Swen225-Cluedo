@@ -55,15 +55,27 @@ public class Room
 	  return cellList.get(randIndex);
   }
 
+//  public Cell getRandomFreeCell() {
+//	  while(true) {
+//	  int randIndex = (int)Math. random()*cellList.size();
+//	  if (cellList.get(randIndex).getWeapon() == null && cellList.get(randIndex).getPlayer() == null){
+//		  return cellList.get(randIndex);
+//	  }
+//	  }
+//
+//  }
+  
   public Cell getRandomFreeCell() {
-	  while(true) {
-	  int randIndex = (int)Math. random()*cellList.size();
-	  if (cellList.get(randIndex).getWeapon() == null && cellList.get(randIndex).getPlayer() == null){
-		  return cellList.get(randIndex);
+	  ArrayList<Cell> tempCellList = new ArrayList<Cell>(this.cellList);
+	  Collections.shuffle(tempCellList);
+	  
+	  for (Cell c : tempCellList) {
+		  if (c.getWeapon() == null && c.getPlayer() == null) {
+			  return c;
+		  }
+	  }	  
+	  return null; //No free cell was found in the room
 	  }
-	  }
-
-  }
 
   public void addCell(Cell c) {
 	  cellList.add(c);

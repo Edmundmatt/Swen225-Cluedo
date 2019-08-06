@@ -88,7 +88,7 @@ public class Game
 			  String input = inputReader.nextLine();
 			  if (input.equals("suggest")) {
 				  if (board.findPlayer(p).getRoom() == null) {
-					  System.out.println("You must be in a room to make an accusation!");
+					  System.out.println("You must be in a room to make a suggestion!");
 				  } else {
 					  suggestion = new Suggestion(p);
 					  suggestion.makeSuggestion(board.findPlayer(p).getRoom());
@@ -250,8 +250,36 @@ public class Game
 	   return Game.board;
    }
 
-   public ArrayList<Player> getPlayers(){
+   public static ArrayList<Player> getPlayers(){
 	   return Game.playerList;
+   }
+   
+   public static void movePlayerToRoom(Player p, Room r) {
+	   Cell newCell = r.getRandomFreeCell();
+	   board.movePlayerToCell(p, newCell);
+   }
+
+   public static void moveWeaponToRoom(Weapon w, Room r) {
+	   Cell newCell = r.getRandomFreeCell();
+	   board.moveWeaponToCell(w, newCell);
+   }
+   
+   public static Weapon getWeapon(String s) {
+	   for(Weapon w : weaponList) {
+		   if(w.toString().equals(s)) {
+			   return w;
+		   }
+	   }
+	   return null;
+   }
+   
+   public static Player getPlayer(String s) {
+	   for(Player p : playerList) {
+		   if(p.toString().equals(s)) {
+			   return p;
+		   }
+	   }
+	   return null;
    }
    
 
