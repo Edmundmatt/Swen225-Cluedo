@@ -26,12 +26,12 @@ public enum RoomCard implements Card {
     }
     
     public String toString() {
-    	return this.text;
+    	return this.name();
     }
 
 	@Override
     public String stringCheck() {
-    	return this.name();
+    	return this.text;
     }
 }
 

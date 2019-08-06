@@ -45,6 +45,7 @@ public class Board
 	    	}
 	    	System.out.println(rowSoFar);
 	    }
+	  System.out.println("\n");
   }
 
   public void setPlayer(Player p, int row, int col) {

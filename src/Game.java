@@ -52,6 +52,7 @@ public class Game
   private static Player p;
   private static ArrayList<Card> solution;
   private static Suggestion suggestion;
+  private static Accusation accusation;
 
   //------------------------
   // CONSTRUCTOR
@@ -83,6 +84,7 @@ public class Game
 		  while (moves > 0) {
 			  if (board.findPlayer(p).getRoom()==null) {
 			  System.out.println("You have " + moves + " moves left. Please enter a direction to move: (north etc)");
+			  System.out.println("Or make an accusation with the command 'accuse'.");
 			  }
 			  Scanner inputReader = new Scanner(System.in);
 			  String input = inputReader.nextLine();
@@ -92,9 +94,20 @@ public class Game
 				  } else {
 					  suggestion = new Suggestion(p);
 					  suggestion.makeSuggestion(board.findPlayer(p).getRoom());
+					  nextPlayerTurn();
 				  }
 			  } else if (input.equals("accuse")) {
-//				  makeAccusation();
+				  accusation = new Accusation(p);
+				  List<Card> accuseAttempt = accusation.makeAccusation();
+				  if(solution.equals(accuseAttempt)) {
+					  gameOver(p);
+					  inputReader.close();
+					  return;
+				  }else {
+					  playerList.remove(p);
+					  inputReader.close();
+					  nextPlayerTurn();
+				  }
 			  } else if (board.canMove(p, input)){
 				  board.movePlayer(p, input);
 				  board.draw();
@@ -103,17 +116,26 @@ public class Game
 				  } else {
 					  System.out.println("You're currently in the " + board.findPlayer(p).getRoom().getName() +".");
 					  System.out.println("You can move freely within the room - please enter a direction.");
+					  System.out.println("Or you can make a suggestion with the command 'suggest'.\n");
 				  }
 			  }
 		  }
-
-
-
+		  
+		  nextPlayerTurn();
+	 }
+  }
+  
+  public static void gameOver(Player p) {
+	  System.out.println("Nice work! That's the correct solution!\n");
+	  System.out.println("Player " + p + " wins the game!");
+  }
+  
+  public static void nextPlayerTurn() {
 	  playerTurn++;
 		if (playerTurn > playerList.size()) {
 			playerTurn = 1;
 		}
-	 }
+		runTurn();
   }
 
   // line 70 "model.ump"
@@ -217,6 +239,15 @@ public class Game
  	  solution.add(randChar);
  	  cCards.remove(randChar);
  	  
+ 	  //Testing the correct accusation
+// 	  solution.add(RoomCard.Kitchen);
+// 	  rCards.remove(RoomCard.Kitchen);
+// 	  solution.add(WeaponCard.Candlestick);
+// 	  wCards.remove(WeaponCard.Candlestick);
+// 	  solution.add(CharacterCard.Miss_Scarlett);
+// 	  cCards.remove(CharacterCard.Miss_Scarlett);
+ 	  
+ 	  
  	  //Rest of cards
  	  while(!rCards.isEmpty() && !wCards.isEmpty() && !cCards.isEmpty()) {
  		  for(Player p : playerList) {
@@ -281,6 +312,7 @@ public class Game
 	   }
 	   return null;
    }
+
    
 
 

@@ -54,6 +54,8 @@ public class Suggestion {
 				System.out.println("Please input a valid character");
 			}
 		}
+		
+
 		//teleport player and weapon to room
 
 		Player suggPlay = Game.getPlayer(playString);
@@ -64,6 +66,8 @@ public class Suggestion {
 		
 		System.out.println(suggestion.toString());
 		Game.getBoard().draw();
+		System.out.println("Player " + p + " makes a suggestion of: ");
+		System.out.println(room.getName() +"\n"+suggPlay+"\n"+weapString+"\n");
 
 		refuteSuggestion();
 	}
@@ -79,14 +83,14 @@ public class Suggestion {
 					Scanner inputReader = new Scanner(System.in);
 					String input = inputReader.nextLine();
 					if(input.equalsIgnoreCase("none")){
-						System.out.println("Player " + player.toString() + " has no cards that refute the suggestion.");
+						System.out.println("Player " + player.toString() + " has no cards that refute the suggestion.\n");
 						break;
 					}else {
 						boolean found = false;
 						for(Card c : suggestion) {
-							if(input.equalsIgnoreCase(c.toString())) {
+							if(input.equalsIgnoreCase(c.toString()) || input.equalsIgnoreCase(c.stringCheck())) {
 								System.out.println("Player " + player.toString() + " refutes the suggestion with card: " +
-										c.toString());
+										c.toString()+"\n");
 								found = true;
 							}
 						}
