@@ -7,5 +7,7 @@
 // line 120 "model.ump"
 public interface Card
 {
-
+	public String toString();
+	
+	public String stringCheck();
 }

@@ -50,7 +50,8 @@ public class Game
   private static ArrayList<Room> roomList;
   private static Board board;
   private static Player p;
-  private static List<Card> solution;
+  private static ArrayList<Card> solution;
+  private static Suggestion suggestion;
 
   //------------------------
   // CONSTRUCTOR
@@ -67,43 +68,44 @@ public class Game
 
   public static int rollDice() {
 	  Random random = new Random();
-	  return (int)(Math. random()*6+1);
+	  return (int)(Math. random()*12+1);
   }
 
   public static void runTurn() {
-	 while(true) {
-	  System.out.println("It's Player " + playerTurn + "'s turn! (your character is " + playerList.get(playerTurn-1).toString() + ")");
-	  Player p = playerList.get(playerTurn-1);
-	  System.out.println("Player " + playerTurn + "'s cards: ");
-	  System.out.println(p.playersCardsToString());
-	  int moves = rollDice();
-	  System.out.println("Dice roll: " + moves);
+		 while(true) {
+		  System.out.println("It's Player " + playerTurn + "'s turn! (your character is " + playerList.get(playerTurn-1).toString() + ")");
+		  Player p = playerList.get(playerTurn-1);
+		  System.out.println("Player " + playerTurn + "'s cards: ");
+		  System.out.println(p.playersCardsToString());
+		  int moves = rollDice();
+		  System.out.println("Dice roll: " + moves);
 
-	  while (moves > 0) {
-		  if (board.findPlayer(p).getRoom()==null) {
-		  System.out.println("You have " + moves + " moves left. Please enter a direction to move: (north etc)");
-		  }
-		  Scanner inputReader = new Scanner(System.in);
-		  String input = inputReader.nextLine();
-		  if (input.equals("suggest")) {
-			  if (board.findPlayer(p).getRoom() == null) {
-				  System.out.println("You must be in a room to make an accusation!");
-			  } else {
-				  makeSuggestion();
-			  }
-		  } else if (input.equals("accuse")) {
-			  makeAccusation();
-		  } else if (board.canMove(p, input)){
-			  board.movePlayer(p, input);
-			  board.draw();
+		  while (moves > 0) {
 			  if (board.findPlayer(p).getRoom()==null) {
-				  moves--;
-			  } else {
-				  System.out.println("You're currently in the " + board.findPlayer(p).getRoom().getName() +".");
-				  System.out.println("You can move freely within the room - please enter a direction.");
+			  System.out.println("You have " + moves + " moves left. Please enter a direction to move: (north etc)");
+			  }
+			  Scanner inputReader = new Scanner(System.in);
+			  String input = inputReader.nextLine();
+			  if (input.equals("suggest")) {
+				  if (board.findPlayer(p).getRoom() == null) {
+					  System.out.println("You must be in a room to make an accusation!");
+				  } else {
+					  suggestion = new Suggestion(p);
+					  suggestion.makeSuggestion(board.findPlayer(p).getRoom());
+				  }
+			  } else if (input.equals("accuse")) {
+//				  makeAccusation();
+			  } else if (board.canMove(p, input)){
+				  board.movePlayer(p, input);
+				  board.draw();
+				  if (board.findPlayer(p).getRoom()==null) {
+					  moves--;
+				  } else {
+					  System.out.println("You're currently in the " + board.findPlayer(p).getRoom().getName() +".");
+					  System.out.println("You can move freely within the room - please enter a direction.");
+				  }
 			  }
 		  }
-	  }
 
 
 
@@ -177,23 +179,27 @@ public class Game
 
    }
 
-   public static void makeSuggestion() {
-	   System.out.println("makeSuggestion() has been called");
-   }
-
-   public static void makeAccusation() {
-	   System.out.println("makeAccusation() has been called");
-   }
-
    //Matt added this method
    public static void generateCards() {
-	  List<Card> rCards = new LinkedList<Card>(Arrays.asList(RoomCard.values()));
-	  List<Card> wCards = new LinkedList<Card>(Arrays.asList(WeaponCard.values()));
-	  List<Card> cCards = new LinkedList<Card>(Arrays.asList(CharacterCard.values()));
-
+	  List<Card> rCards = getRoomCards();
+	  List<Card> wCards = getWeapCards();
+	  List<Card> cCards = getCharCards();
+	  
  	  distributeCards(rCards, wCards, cCards);
    }
+   
+   public static List<Card> getRoomCards() {
+	   return new LinkedList<Card>(Arrays.asList(RoomCard.values()));
+   }
+   
+   public static List<Card> getWeapCards() {
+	   return new LinkedList<Card>(Arrays.asList(WeaponCard.values()));
+   }
 
+   public static List<Card> getCharCards() {
+	   return new LinkedList<Card>(Arrays.asList(CharacterCard.values()));
+   }
+   
    //Matt added this method
    public  static void distributeCards(List<Card> rCards, List<Card> wCards, List<Card> cCards) {
  	  //Random solution
@@ -210,7 +216,7 @@ public class Game
  	  Card randChar = getRandCard(cCards);
  	  solution.add(randChar);
  	  cCards.remove(randChar);
-
+ 	  
  	  //Rest of cards
  	  while(!rCards.isEmpty() && !wCards.isEmpty() && !cCards.isEmpty()) {
  		  for(Player p : playerList) {
@@ -229,34 +235,25 @@ public class Game
  				  p.getPlayersCards().add(randChar);
  				  cCards.remove(randChar);
  			  }
-
+ 			  
  		  }
  	  }
    }
-
-   public void movePlayerToRoom(Player p, Room r) {
-	   Cell newCell = r.getRandomFreeCell();
-	   board.movePlayerToCell(p, newCell);
-   }
-
-   public void moveWeaponToRoom(Weapon w, Room r) {
-	   Cell newCell = r.getRandomFreeCell();
-	   board.moveWeaponToCell(w, newCell);
-   }
-
+   
    //Matt added - function to get random element from List
    public static Card getRandCard(List<Card> list) {
  	  Random rand = new Random();
  	  return list.get(rand.nextInt(list.size()));
    }
-
-   public Board getBoard() {
+   
+   public static Board getBoard() {
 	   return Game.board;
    }
 
    public ArrayList<Player> getPlayers(){
 	   return Game.playerList;
    }
+   
 
 
   public String toString()
