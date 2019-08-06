@@ -45,9 +45,9 @@ public class Game
   //Game Attributes
  // private HashMap playerDecks;
   private static int playerTurn;
-  private static List<Player> playerList;
-  private static List<Weapon> weaponList;
-  private static List<Room> roomList;
+  private static ArrayList<Player> playerList;
+  private static ArrayList<Weapon> weaponList;
+  private static ArrayList<Room> roomList;
   private static Board board;
   private static Player p;
   private static List<Card> solution;
@@ -248,6 +248,14 @@ public class Game
    public static Card getRandCard(List<Card> list) {
  	  Random rand = new Random();
  	  return list.get(rand.nextInt(list.size()));
+   }
+
+   public Board getBoard() {
+	   return Game.board;
+   }
+
+   public ArrayList<Player> getPlayers(){
+	   return Game.playerList;
    }
 
 

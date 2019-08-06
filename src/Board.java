@@ -130,7 +130,7 @@ public class Board
 
   String input =
     "111111##___#2222#___##333333"+
-	"111111#___#222222#___#333333"+ //y-29 x-28
+	"111111#___#222222#___#333333"+
 	"111111#___#222222#___#333333"+
 	"111111#___#222222#____333333"+
 	"#11111#____222222____#######"+
@@ -258,6 +258,14 @@ public class Board
 
   public String toString()
   {
-    return super.toString() + "["+ "]";
+	String boardString = "";
+
+    for (int row = 0 ; row < 25; row++) {
+	    	for (int col = 0; col < 28; col++) {
+	    		boardString += board[row][col].toString();
+	    	}
+	    }
+
+    return boardString;
   }
 }
