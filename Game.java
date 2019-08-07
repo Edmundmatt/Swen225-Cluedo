@@ -98,16 +98,16 @@ public class Game
 							 gameOver(p);
 							 return;
 						 }else {
-							 if(outPlayers.size() == playerList.size()) {
-								 gameOverLoss();
-								 return;
-							 }
 							 System.out.println("Accuse attempt failure");
 							 System.out.println("Player " + p + " can no longer make suggestions or accusations!\n");
 							 outPlayers.add(p);
 							 p.setSkip(true);
-							 nextPlayerTurn();
-
+							 if(outPlayers.size() == playerList.size()) {
+								 gameOverLoss();
+								 return;
+							 }
+//							 nextPlayerTurn();
+							 break;
 						 }
 					 } else if (board.canMove(p, input)){
 						 board.movePlayer(p, input);
