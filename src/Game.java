@@ -1,3 +1,4 @@
+//Authored by Ben Hanson and Matt Edmundson
 /*PLEASE DO NOT EDIT THIS CODE*/
 /*This code was generated using the UMPLE 1.29.1.4597.b7ac3a910 modeling language!*/
 
@@ -37,6 +38,7 @@ public class Game
  // private HashMap playerDecks;
   private static int playerTurn;
   private static ArrayList<Player> playerList;
+  private static ArrayList<Player> outPlayers;
   private static ArrayList<Weapon> weaponList;
   private static ArrayList<Room> roomList;
   private static Board board;
@@ -54,9 +56,10 @@ public class Game
     playerList = new ArrayList<Player>();
     weaponList = new ArrayList<Weapon>();
     roomList = new ArrayList<Room>();
+    outPlayers = new ArrayList<Player>();
   }
 
-  /*Random dice rolling*/
+  /*Random dice rolling - equivalent of 2 dice so goes up to 12*/
   public static int rollDice() {
 	  Random random = new Random();
 	  return (int)(Math. random()*12+1);
@@ -68,20 +71,20 @@ public class Game
 			 Player p = playerList.get(playerTurn-1);
 			 //If a player has already made an accusation - skip turn
 			 if(!p.getSkip()) {
-				 System.out.println("It's Player " + p + "'s turn! (your character is " + playerList.get(playerTurn-1).toString() + ")");
+				 System.out.println("It's Player " + playerTurn + "'s turn! (your character is " + playerList.get(playerTurn-1).toString() + ")");
 				 System.out.println("Player " + p + "'s cards: ");
-				 System.out.println(p.playersCardsToString());
+				 System.out.println(p.playersCardsToString()); //Prints out character's cards
 				 int moves = rollDice();
-				 System.out.println("Dice roll: " + moves);
+				 System.out.println("Dice roll: " + moves); //Prints out dice roll
 
-				 while (moves > 0) {
-					 if (board.findPlayer(p).getRoom()==null) {
+				 while (moves > 0) { //While player still has moves
+					 if (board.findPlayer(p).getRoom()==null) { //If play is not currently in a room
 						 System.out.println("You have " + moves + " moves left. Please enter a direction to move: (north etc)");
 						 System.out.println("Or make an accusation with the command 'accuse'.");
 					 }
 					 Scanner inputReader = new Scanner(System.in);
 					 String input = inputReader.nextLine();
-					 if (input.equals("suggest")) {
+					 if (input.equals("suggest")) { //If player inputs suggest, creates suggestion after checking that they are in a room
 						 if (board.findPlayer(p).getRoom() == null) {
 							 System.out.println("You must be in a room to make a suggestion!");
 						 } else {
@@ -89,25 +92,29 @@ public class Game
 							 suggestion.makeSuggestion(board.findPlayer(p).getRoom());
 							 nextPlayerTurn();
 						 }
-					 } else if (input.equals("accuse")) {
+					 } else if (input.equals("accuse")) { //If player inputs accuse, creates accusation
 						 accusation = new Accusation(p);
 						 List<Card> accuseAttempt = accusation.makeAccusation();
-						 if(solution.equals(accuseAttempt)) {
+						 if(solution.equals(accuseAttempt)) { //If player accusation is correct, player wins and game ends
 							 gameOver(p);
 							 return;
-						 }else {
+						 } else { //If player accusation is incorrect, player is out but can still refute suggestions
 							 System.out.println("Accuse attempt failure");
 							 System.out.println("Player " + p + " can no longer make suggestions or accusations!\n");
+							 outPlayers.add(p);
 							 p.setSkip(true);
-							 nextPlayerTurn();
-
+							 if(outPlayers.size() == playerList.size()) { //Checks if all players have made false accusations - and ends game if so
+								 gameOverLoss();
+								 return;
+							 }
+							 break;
 						 }
-					 } else if (board.canMove(p, input)){
-						 board.movePlayer(p, input);
+					 } else if (board.canMove(p, input)){ //If input is a valid direction to move in
+						 board.movePlayer(p, input); //Move player
 						 board.draw();
-						 if (board.findPlayer(p).getRoom()==null) {
+						 if (board.findPlayer(p).getRoom()==null) { //Subtracts move if player isn't in a room
 							 moves--;
-						 } else {
+						 } else { //If player is in a room, they can move freely or make suggestions
 							 System.out.println("You're currently in the " + board.findPlayer(p).getRoom().getName() +".");
 							 System.out.println("You can move freely within the room - please enter a direction.");
 							 System.out.println("Or you can make a suggestion with the command 'suggest'.\n");
@@ -116,10 +123,6 @@ public class Game
 				 }
 			 }
 		  
-//		  playerTurn++;
-//			if (playerTurn > playerList.size()) {
-//				playerTurn = 1;
-//			}
 		  nextPlayerTurn();
 	 }
   }
@@ -130,19 +133,24 @@ public class Game
 	  System.out.println("Player " + p + " wins the game!");
   }
   
+  //Called when game ends with no winner
+  public static void gameOverLoss() {
+	  System.out.println("None of the players made a correct accusation.");
+	  System.out.println("The game is over!\n");
+  }
+  
   /*Continue to the next player's turn*/
   public static void nextPlayerTurn() {
 	  playerTurn++;
 		if (playerTurn > playerList.size()) {
 			playerTurn = 1;
 		}
-		runTurn();
   }
   
-  /*Initialises much of the game elements*/
+  /*Creates board and initialises to desired player count, also initialises cards and weapons*/
    public static void initialise(int playerCount){
 	    board = new Board();
-	    //Create new players add add them to the board
+	    //Create new players add add them to the board - first three will always be added
 		Player p1 = new Player("S"); //Miss Scarlett
 		playerList.add(p1);
 		Player p2 = new Player("M"); //Colonel Mustard
@@ -152,23 +160,23 @@ public class Game
 		board.setPlayer(p1, 24, 8);
 		board.setPlayer(p2, 17, 0);
 		board.setPlayer(p3, 0, 10);
-		if (playerCount > 3) {
-			Player p4 = new Player("G"); //Mr. Green
+		if (playerCount > 3) { //If more than 3 players are specified, add Mr. Green
+			Player p4 = new Player("G");
 			board.setPlayer(p4, 0, 17);
 			playerList.add(p4);
 		}
-		if (playerCount > 4) {
-			Player p5 = new Player("P"); //Mrs. Peacock
+		if (playerCount > 4) {  //If more than 4 players are specified, add Mrs. Peacock
+			Player p5 = new Player("P");
 			board.setPlayer(p5, 5, 27);
 			playerList.add(p5);
 		}
 		if (playerCount > 5) {
-			Player p6 = new Player("L"); //Professor Plum
+			Player p6 = new Player("L");  //If more than 5 players are specified, add Professor Plum
 			board.setPlayer(p6, 19, 27);
 			playerList.add(p6);
 		}
-		board.buildBoard();
-		for (Room r : board.getRooms()) {
+		board.buildBoard(); //Constructs board
+		for (Room r : board.getRooms()) { //Adds constructed board's rooms to game roomList
 			roomList.add(r);
 		}
 		//Create all the cards and weapons
@@ -193,12 +201,12 @@ public class Game
 	   weaponList.add(spanner);
 
 	   ArrayList<Weapon> tempWeaponList = new ArrayList<Weapon>(weaponList);
-	   Collections.shuffle(tempWeaponList);
+	   Collections.shuffle(tempWeaponList); //Creates randomly ordered weaponList
 
-	   ArrayList<Room> randomRooms = board.getRandomRooms();
+	   ArrayList<Room> randomRooms = board.getRandomRooms(); //Retrieves randomly ordered room list
+	   
 	   int index = 0;
-
-	   for (Weapon w : tempWeaponList) {
+	   for (Weapon w : tempWeaponList) { //Runs through both lists, adding random weapon to random room
 		   randomRooms.get(index).getRandomCell().setWeapon(w);
 		   index++;
 	   }
@@ -287,6 +295,10 @@ public class Game
 
    public static ArrayList<Player> getPlayers(){
 	   return Game.playerList;
+   }
+   
+   public static ArrayList<Weapon> getWeapons(){
+	   return Game.weaponList;
    }
    
    /*Moves a player to a random free cell in a room*/

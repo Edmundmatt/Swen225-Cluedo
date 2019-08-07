@@ -1,4 +1,4 @@
-
+//Authored by Ben Hanson and Matt Edmundson
 public enum RoomCard implements Card {
 	Kitchen("kitchen"),
 	Ball_Room("ball room"),
@@ -26,7 +26,7 @@ public enum RoomCard implements Card {
     }
     
     public String toString() {
-    	return this.name();
+    	return this.text;
     }
 
 	@Override

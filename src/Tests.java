@@ -1,3 +1,4 @@
+//Authored by Ben Hanson and Matt Edmundson
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.io.ByteArrayInputStream;
@@ -220,7 +221,7 @@ public class Tests {
 					assertEquals(expected, board.toString());
 				}
 
-			//Tests that player can't move after accusation
+			//Tests that player can't move into other player
 			public @Test void test_10() {
 				Board board = new Board();
 				board.buildBoard();
@@ -228,10 +229,11 @@ public class Tests {
 				board.setPlayer(p1, 1, 1);
 				Player p2 = new Player("s");
 				board.setPlayer(p2, 2, 1);
+				board.movePlayer(p2, "north");
 				String expected =
 						"______##___#____#___##______"+
-						"_ts___#___#______#___#______"+
-						"______#___#______#___#______"+
+						"_t____#___#______#___#______"+
+						"_s____#___#______#___#______"+
 						"______#___#______#__________"+
 						"#_____#______________#######"+
 						"####_##___#______#__________"+
@@ -257,5 +259,28 @@ public class Tests {
 					assertEquals(expected, board.toString());
 				}
 			
+			//Tests that all weapons are being distributed on board
+			public @Test void test_11() {
+				Game g = new Game();
+				g.initialise(3);
+				boolean allWeaponsPresent = true;
+				for (Weapon w : g.getWeapons()) {
+					if (g.getBoard().findWeapon(w) == null) {
+						allWeaponsPresent = false;
+					}
+				}
+				assertEquals(true, allWeaponsPresent);
+			}
+			
+			//Tests that all cards are being distributed to players (21 in total - 3 taken out for the solution)
+			public @Test void test_12() {
+				Game g = new Game();
+				g.initialise(4);
+				int cardSum = 0;
+				for (Player p : g.getPlayers()) {
+					cardSum += p.getPlayersCards().size();
+				}
+				assertEquals(18, cardSum);
+			}
 
 	}

@@ -1,4 +1,4 @@
-
+//Authored by Ben Hanson and Matt Edmundson
 public enum CharacterCard implements Card {
 	Miss_Scarlett("S"),
 	Colonel_Mustard("M"),

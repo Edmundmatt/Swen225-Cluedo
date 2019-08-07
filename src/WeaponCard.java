@@ -1,4 +1,4 @@
-
+//Authored by Ben Hanson and Matt Edmundson
 public enum WeaponCard implements Card{
 	Candlestick("c"),
 	Dagger("d"),
