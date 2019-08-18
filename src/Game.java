@@ -4,14 +4,24 @@
 
 
 import java.util.*;
+import javafx.application.Application;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
+import javafx.scene.Scene;
+import javafx.scene.control.Button;
+import javafx.scene.layout.StackPane;
+import javafx.stage.Stage;
 
 // line 61 "model.ump"
 // line 136 "model.ump"
+
+
+
 public class Game
 {
 	public static void main(String[] args) {
 		Game g = new Game();
-		
+
 		//Loop to to ensure a correct number of players is inputted into the game
 		while (true){
 		int playerCount = 0;
@@ -21,6 +31,7 @@ public class Game
 			playerCount = inputReader.nextInt();
 			if (playerCount >= 3 && playerCount <= 6) {
 				initialise(playerCount);
+				gui = new GUI();
 				break;
 			}
 		}
@@ -46,6 +57,7 @@ public class Game
   private static ArrayList<Card> solution;
   private static Suggestion suggestion;
   private static Accusation accusation;
+  private static GUI gui;
 
   //------------------------
   // CONSTRUCTOR
@@ -112,6 +124,7 @@ public class Game
 					 } else if (board.canMove(p, input)){ //If input is a valid direction to move in
 						 board.movePlayer(p, input); //Move player
 						 board.draw();
+						 gui.drawBoard(board.retrieveBoard(), 28, 25); //Updates GUI board
 						 if (board.findPlayer(p).getRoom()==null) { //Subtracts move if player isn't in a room
 							 moves--;
 						 } else { //If player is in a room, they can move freely or make suggestions
@@ -122,10 +135,12 @@ public class Game
 					 }
 				 }
 			 }
-		  
+		  gui.drawBoard(board.retrieveBoard(), 28, 25); //Updates GUI board
 		  nextPlayerTurn();
 	 }
   }
+
+  
   
   /*Method called when the game has finished*/
   public static void gameOver(Player p) {
@@ -338,4 +353,6 @@ public class Game
   {
     return super.toString();
   }
+
+
 }
