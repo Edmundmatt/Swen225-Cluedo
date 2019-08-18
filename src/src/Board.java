@@ -1,3 +1,5 @@
+//Authored by Ben Hanson and Matt Edmundson
+
 /*PLEASE DO NOT EDIT THIS CODE*/
 /*This code was generated using the UMPLE 1.29.1.4597.b7ac3a910 modeling language!*/
 
@@ -15,8 +17,8 @@ public class Board
   //------------------------
 
   //Board Attributes
-  private Cell[][] board;
-  private ArrayList<Room> rooms;
+  private Cell[][] board; //2D array of cells representing board
+  private ArrayList<Room> rooms; //Represents rooms on board
 
 
 
@@ -26,25 +28,27 @@ public class Board
 
   public Board()
   {
-	rooms = new ArrayList<Room>();
+	rooms = new ArrayList<Room>(); 
 
-    board = new Cell[25][28];
+    board = new Cell[25][28]; //Builds board to appropriate specifications
     for (int row = 0 ; row < 25; row++) {
     	for (int col = 0; col < 28; col++) {
-    		board[row][col] = new Cell(null, null, row, col);
+    		board[row][col] = new Cell(null, null, row, col);  //Runs through the board array initialising blank cells
     	}
     }
   }
 
+  /*Draws the board out in the console*/
   public void draw() {
 	  for (int row = 0 ; row < 25; row++) {
 		  String rowSoFar = "";
 	    	for (int col = 0; col < 28; col++) {
-	    		rowSoFar += board[row][col].toString();
-	    		rowSoFar += "|";
+	    		rowSoFar += board[row][col].toString(); //Adds cell's string form to board
+	    		rowSoFar += "|"; //Draws an '|' character between each element on board to form visual grid
 	    	}
 	    	System.out.println(rowSoFar);
 	    }
+	  System.out.println("\n");
   }
 
   public void setPlayer(Player p, int row, int col) {
@@ -55,50 +59,54 @@ public class Board
 	  board[row][col].setWeapon(w);
   }
 
+  /*Moves the player one cell in the indicated direction, doesn't let player move off board or into walls*/
   public void movePlayer (Player p, String dir) {
 	  Cell c = findPlayer(p);
 	  if (c != null) {
 		  int x = c.getX();
 		  int y = c.getY();
 
-		  if (dir.equals("north") && x > 0 && !board[x-1][y].isWall()) {
-			  board[x-1][y].setPlayer(c.getPlayer());
-			  c.setPlayer(null);
-		  } else if (dir.equals("south") && x < 24  && !board[x+1][y].isWall()) {
-			  board[x+1][y].setPlayer(c.getPlayer());
-			  c.setPlayer(null);
-		  } else if (dir.equals("east") && y < 27 && !board[x][y+1].isWall()) {
-			  board[x][y+1].setPlayer(c.getPlayer());
-			  c.setPlayer(null);
-		  } else if (dir.equals("west") && y > 0 && !board[x][y-1].isWall()){
-			  board[x][y-1].setPlayer(c.getPlayer());
-			  c.setPlayer(null);
+		  if (canMove(p,dir)) {
+			  if (dir.equals("north")) {
+				  board[x-1][y].setPlayer(c.getPlayer());
+				  c.setPlayer(null);
+			  } else if (dir.equals("south")) {
+				  board[x+1][y].setPlayer(c.getPlayer());
+				  c.setPlayer(null);
+			  } else if (dir.equals("east")) {
+				  board[x][y+1].setPlayer(c.getPlayer());
+				  c.setPlayer(null);
+			  } else if (dir.equals("west")){
+				  board[x][y-1].setPlayer(c.getPlayer());
+				  c.setPlayer(null);
+			  }	
 		  }
 	  }
   }
 
+  /*Checks if the player can move in an indicated direction, doesn't let player into other player, off board or into wall*/
   public boolean canMove(Player p, String dir) {
 	  Cell c = findPlayer(p);
 	  if (c != null) {
 		  int x = c.getX();
 		  int y = c.getY();
 
-		  if (dir.equals("north") && x > 0 && !board[x-1][y].isWall()) {
+		  if (dir.equals("north") && x > 0) {
 			  Cell next = board[x-1][y];
 			  if (!next.isWall() && next.getPlayer() == null) {
 				  return true;
 			  }
-		  } else if (dir.equals("south") && x < 24  && !board[x+1][y].isWall()) {
+		  } else if (dir.equals("south") && x < 24) {
 			  Cell next = board[x+1][y];
 			  if (!next.isWall() && next.getPlayer() == null) {
 				  return true;
 			  }
-		  } else if (dir.equals("east") && y < 27 && !board[x][y+1].isWall()) {
+		  } else if (dir.equals("east") && y < 27) {
 			  Cell next = board[x][y+1];
 			  if (!next.isWall() && next.getPlayer() == null) {
 				  return true;
 			  }
-		  } else if (dir.equals("west") && y > 0 && !board[x][y-1].isWall()){
+		  } else if (dir.equals("west") && y > 0){
 			  Cell next = board[x][y-1];
 			  if (!next.isWall() && next.getPlayer() == null) {
 				  return true;
@@ -108,6 +116,7 @@ public class Board
 	  return false;
   }
 
+  /*Sets up the board and all of the room positions*/
   public void buildBoard() {
 	  Room kitchen = new Room("kitchen");
 	  rooms.add(kitchen);
@@ -128,9 +137,9 @@ public class Board
 	  Room study = new Room("study");
 	  rooms.add(study);
 
-  String input =
+  String input = //Builds the room, underscores are corridors, hashes are walls and numbers represent rooms
     "111111##___#2222#___##333333"+
-	"111111#___#222222#___#333333"+ //y-29 x-28
+	"111111#___#222222#___#333333"+
 	"111111#___#222222#___#333333"+
 	"111111#___#222222#____333333"+
 	"#11111#____222222____#######"+
@@ -158,6 +167,7 @@ public class Board
   	int row = 0;
   	int col = 0;
 
+  	//Moves through the board, setting cells to their string defined equivalent 
   	for (char c : input.toCharArray()) {
   		if (c == '#') {
   			board[row][col].setWall(true);
@@ -198,10 +208,23 @@ public class Board
   	}
   }
 
+  /*Return the cell a player is located in on the board*/
   public Cell findPlayer(Player p) {
 	  for (int row = 0 ; row < 25; row++) {
-	    	for (int col = 0; col < 24; col++) {
+	    	for (int col = 0; col < 28; col++) {
 	    		if (board[row][col].getPlayer() == p) {
+	    			return board[row][col];
+	    		}
+	    	}
+	    }
+	return null;
+  }
+  
+  /*Return the cell a weapon is located in on the board*/
+  public Cell findWeapon (Weapon w) {
+	  for (int row = 0 ; row < 25; row++) {
+	    	for (int col = 0; col < 28; col++) {
+	    		if (board[row][col].getWeapon() == w) {
 	    			return board[row][col];
 	    		}
 	    	}
@@ -210,7 +233,6 @@ public class Board
   }
 
 
-  // line 7 "model.ump"
   public Cell findCell(int x, int y){
 	return board[x][y];
   }
@@ -219,10 +241,27 @@ public class Board
 	  return this.rooms;
   }
 
+  //Returns a randomly ordered list of rooms
   public ArrayList<Room> getRandomRooms() {
 	  ArrayList<Room> randomRooms = new ArrayList<Room>(rooms);
 	  Collections.shuffle(randomRooms);
 	  return randomRooms;
+  }
+
+  public void movePlayerToCell(Player p, Cell c) {
+	  if (c.getPlayer() == null) {
+		  Cell originalPos = findPlayer(p);
+		  c.setPlayer(p);
+		  originalPos.setPlayer(null);
+	  }
+  }
+
+  public void moveWeaponToCell(Weapon w, Cell c) {
+	  if (c.getWeapon() == null) {
+		  Cell originalPos = findWeapon(w);
+		  c.setWeapon(w);
+		  originalPos.setWeapon(null);
+	  }
   }
 
   public Cell[][] retrieveBoard(){
@@ -231,6 +270,14 @@ public class Board
 
   public String toString()
   {
-    return super.toString() + "["+ "]";
+	String boardString = "";
+
+    for (int row = 0 ; row < 25; row++) {
+	    	for (int col = 0; col < 28; col++) {
+	    		boardString += board[row][col].toString();
+	    	}
+	    }
+
+    return boardString;
   }
 }

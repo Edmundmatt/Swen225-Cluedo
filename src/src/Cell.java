@@ -1,3 +1,4 @@
+//Authored by Ben Hanson and Matt Edmundson
 /*PLEASE DO NOT EDIT THIS CODE*/
 /*This code was generated using the UMPLE 1.29.1.4597.b7ac3a910 modeling language!*/
 
@@ -14,12 +15,12 @@ public class Cell
   //------------------------
 
   //Cell Attributes
-  private Player player;
-  private Weapon weapon;
-  private int x;
+  private Player player; //Player currently occupying this cell
+  private Weapon weapon; //Weapon currently occupying this cell
+  private int x; //Location of cell in board
   private int y;
-  private boolean isWall;
-  private Room room;
+  private boolean isWall; //Is true if this cell is a wall
+  private Room room; //Stores room that this cell is a part of
 
 
   //------------------------
@@ -40,7 +41,7 @@ public class Cell
   // INTERFACE
   //------------------------
 
-  public boolean setPlayer(Player aPlayer)
+  public boolean setPlayer(Player aPlayer) 
   {
     boolean wasSet = false;
     player = aPlayer;
@@ -108,14 +109,15 @@ public class Cell
 	  return this.room;
   }
 
-  public String toString()
+  //Displays state of cell, prioritises player over weapon if they occupy the same cell
+  public String toString() 
   {
 	if (isWall) {
-		return "#";
+		return "#"; //Represents wall
 	} else if (player != null) {
-    	return player.toString();
+    	return player.toString(); //If player occupies cell, display them
     } else if (weapon != null){
-    	return weapon.toString();
+    	return weapon.toString(); //Else if weapon occupies cell, display that
     } else {
     	return "_";
     }

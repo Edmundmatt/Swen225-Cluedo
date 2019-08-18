@@ -1,3 +1,4 @@
+//Authored by Ben Hanson and Matt Edmundson
 /*PLEASE DO NOT EDIT THIS CODE*/
 /*This code was generated using the UMPLE 1.29.1.4597.b7ac3a910 modeling language!*/
 
@@ -14,8 +15,8 @@ public class Room
   //------------------------
 
   //Room Attributes
-  private String name;
-  private ArrayList<Cell> cellList;
+  private String name; //Name of room
+  private ArrayList<Cell> cellList; //List of cells which comprise this room
 
   //------------------------
   // CONSTRUCTOR
@@ -50,25 +51,28 @@ public class Room
     return cellList;
   }
 
+  //Returns a random cell from the room
   public Cell getRandomCell() {
 	  int randIndex = (int)Math. random()*cellList.size();
 	  return cellList.get(randIndex);
   }
 
+  //Returns a random cell from the room that doesn't contain a player or a weapon
   public Cell getRandomFreeCell() {
-	  while(true) {
-	  int randIndex = (int)Math. random()*cellList.size();
-	  if (cellList.get(randIndex).getWeapon() == null && cellList.get(randIndex).getPlayer() == null){
-		  return cellList.get(randIndex);
+	  ArrayList<Cell> tempCellList = new ArrayList<Cell>(this.cellList);
+	  Collections.shuffle(tempCellList);
+	  
+	  for (Cell c : tempCellList) {
+		  if (c.getWeapon() == null && c.getPlayer() == null) {
+			  return c;
+		  }
+	  }	  
+	  return null; //No free cell was found in the room
 	  }
-	  }
-
-  }
 
   public void addCell(Cell c) {
 	  cellList.add(c);
   }
-
 
   public String toString()
   {
