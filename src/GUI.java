@@ -4,6 +4,7 @@
 
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.util.*;
@@ -14,6 +15,7 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.border.Border;
 
 import javafx.application.Application;
 import javafx.event.ActionEvent;
@@ -40,49 +42,90 @@ public class GUI extends Application
 	  initialiseGUI();
 	  drawBoard(Game.getBoard().retrieveBoard(),28,25);
   }
-  
+
   private void initialiseGUI() {
 	  frame.setLayout(new BorderLayout());
 	  frame.setVisible(true);
   }
-  
+
   public void drawBoard(Cell[][] board, int cols, int rows) {
 	  Board textBoard = new Board();
 	  textBoard.buildBoard();
 	  boardPanel = new JPanel(new GridLayout(rows, cols));
-	  
+
 	  for (int row = 0 ; row < 25; row++) {
 	    	for (int col = 0; col < 28; col++) {
               JLabel cell = new JLabel(getIcon(board[row][col]),JLabel.CENTER);
-              cell.setMinimumSize(new Dimension(15,15));
+              cell.setMinimumSize(new Dimension(20,20));
+              Border border = BorderFactory.createLineBorder(Color.BLACK, 1);
+              cell.setBorder(border);
               boardPanel.add(cell);
           }
       }
-      System.out.println(boardPanel.contains(1, 1));
-      boardPanel.setMaximumSize(new Dimension(15*cols,15*rows));
-      boardPanel.setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15));
+      boardPanel.setMaximumSize(new Dimension(20*cols,20*rows));
+      boardPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
       frame.add(boardPanel);
-      frame.setSize(500,500);
+      frame.setSize(575,575);
       frame.setVisible(true);
   }
-  
+
   private ImageIcon getIcon(Cell cell) {
 	  if (cell.isWall()) {
 		  return new ImageIcon("src/wallCell.png");
-	  } else if (cell.getPlayer() != null) {
-		  if (cell.getRoom() != null) {
-			  return new ImageIcon("src/playerRoomCell.png");
+	  } else if (cell.getPlayer() != null) { //If cell contains player
+		  if (cell.getRoom() != null) { //If cell is in room
+			  if (cell.getPlayer().toString().equals("S")) {
+				  return new ImageIcon("src/missScarlettRoomCell.png");
+			  } else if (cell.getPlayer().toString().equals("M")) {
+				  return new ImageIcon("src/colonelMustardRoomCell.png");
+			  } else if (cell.getPlayer().toString().equals("W")) {
+				  return new ImageIcon("src/mrsWhiteRoomCell.png");
+			  } else if (cell.getPlayer().toString().equals("G")) {
+				  return new ImageIcon("src/mrGreenRoomCell.png");
+			  } else if (cell.getPlayer().toString().equals("P")) {
+				  return new ImageIcon("src/mrsPeacockRoomCell.png");
+			  } else {
+				  return new ImageIcon("src/professorPlumRoomCell.png");
+			  }
 		  } else {
-			  return new ImageIcon("src/playerEmptyCell.png");
+			  if (cell.getPlayer().toString().equals("S")) {
+				  return new ImageIcon("src/missScarlettEmptyCell.png");
+			  } else if (cell.getPlayer().toString().equals("M")) {
+				  return new ImageIcon("src/colonelMustardEmptyCell.png");
+			  } else if (cell.getPlayer().toString().equals("W")) {
+				  return new ImageIcon("src/mrsWhiteEmptyCell.png");
+			  } else if (cell.getPlayer().toString().equals("G")) {
+				  return new ImageIcon("src/mrGreenEmptyCell.png");
+			  } else if (cell.getPlayer().toString().equals("P")) {
+				  return new ImageIcon("src/mrsPeacockEmptyCell.png");
+			  } else {
+				  return new ImageIcon("src/professorPlumEmptyCell.png");
+			  }
 		  }
 	  } else if (cell.getRoom() != null) {
+		  if (cell.getWeapon() != null) {
+			  if (cell.getWeapon().toString().equals("l")) {
+				  return new ImageIcon("src/leadpipeCell.png");
+			  } else if (cell.getWeapon().toString().equals("c")){
+				  return new ImageIcon("src/candlestickCell.png");
+			  } else if (cell.getWeapon().toString().equals("d")){
+				  return new ImageIcon("src/daggerCell.png");
+			  } else if (cell.getWeapon().toString().equals("r")){
+				  return new ImageIcon("src/revolverCell.png");
+			  } else if (cell.getWeapon().toString().equals("s")){
+				  return new ImageIcon("src/spannerCell.png");
+			  } else {
+				  return new ImageIcon("src/ropeCell.png");
+			  }
+		  } else {
 		  return new ImageIcon("src/roomCell.png");
+		  }
 	  } else {
 		  return new ImageIcon("src/emptyCell.png");
 	  }
   }
-  
- 
+
+
 
 
   public String toString()
@@ -92,6 +135,6 @@ public class GUI extends Application
 
 @Override
 public void start(Stage primaryStage) throws Exception {
-	
+
 }
 }
