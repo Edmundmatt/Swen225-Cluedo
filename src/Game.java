@@ -19,27 +19,27 @@ import javafx.stage.Stage;
 
 public class Game
 {
-	public static void main(String[] args) {
-		Game g = new Game();
-
-		//Loop to to ensure a correct number of players is inputted into the game
-		while (true){
-		int playerCount = 0;
-		Scanner inputReader = new Scanner(System.in);
-		System.out.println("Welcome to Cluedo! How many players this game? (between 3-6)");
-		if (inputReader.hasNextInt()) {
-			playerCount = inputReader.nextInt();
-			if (playerCount >= 3 && playerCount <= 6) {
-				initialise(playerCount);
-				gui = new GUI();
-				break;
-			}
-		}
-		System.out.println("Please enter a number between 3 and 6!");
-		}
-
-		runTurn();
-	}
+//	public static void main(String[] args) {
+//		Game g = new Game();
+//
+//		//Loop to to ensure a correct number of players is inputted into the game
+//		while (true){
+//		int playerCount = 0;
+//		Scanner inputReader = new Scanner(System.in);
+//		System.out.println("Welcome to Cluedo! How many players this game? (between 3-6)");
+//		if (inputReader.hasNextInt()) {
+//			playerCount = inputReader.nextInt();
+//			if (playerCount >= 3 && playerCount <= 6) {
+//				initialise(playerCount);
+//				gui = new GUI();
+//				break;
+//			}
+//		}
+//		System.out.println("Please enter a number between 3 and 6!");
+//		}
+//
+//		runTurn();
+//	}
 
   //------------------------
   // MEMBER VARIABLES

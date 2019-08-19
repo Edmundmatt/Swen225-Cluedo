@@ -1,4 +1,5 @@
 import java.awt.EventQueue;
+import java.awt.GridLayout;
 import java.awt.Image;
 import java.awt.Label;
 import java.awt.image.BufferedImage;
@@ -9,9 +10,15 @@ import javax.swing.JFrame;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
+
+import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Dimension;
+
+import javax.swing.border.Border;
 import javax.swing.border.LineBorder;
 import javax.imageio.ImageIO;
+import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -21,6 +28,7 @@ import java.awt.event.ActionEvent;
 public class GUITest {
 
 	private JFrame frame;
+	private JPanel boardPanel;
 	private static ImageIcon diceOne = makeImageIcon("inverted-dice-1.png");
 	private static ImageIcon diceTwo = makeImageIcon("inverted-dice-2.png");
 	private static ImageIcon diceThree = makeImageIcon("inverted-dice-3.png");
@@ -99,15 +107,24 @@ public class GUITest {
 		
 		JMenuItem mntmGame = new JMenuItem("Game");
 		menuBar.add(mntmGame);
-		
+//		
 		JPanel footerPanel = new JPanel();
 		footerPanel.setBounds(0, 505, 434, -104);
 		frame.getContentPane().add(footerPanel);
 		
-		JPanel boardPanel = new JPanel();
-		boardPanel.setBounds(0, 21, 434, 380);
-		frame.getContentPane().add(boardPanel);
+//		frame.getContentPane().setLayout(new BorderLayout());
+		  
 		
+		boardPanel = new JPanel();
+		boardPanel.setBounds(0, 21, 434, 380);
+		boardPanel.setBackground(Color.red);
+		frame.getContentPane().add(boardPanel);
+		Game g = new Game();
+		g.initialise(6);
+		drawBoard(g.getBoard().retrieveBoard(),28,25);
+		frame.getContentPane().add(boardPanel);
+
+
 		JButton btnRollDice = new JButton("Roll Dice");
 		btnRollDice.setBounds(166, 412, 113, 30);
 		frame.getContentPane().add(btnRollDice);
@@ -149,6 +166,81 @@ public class GUITest {
 		btnMakeAccusation.setBounds(10, 494, 113, 30);
 		frame.getContentPane().add(btnMakeAccusation);
 	}
+	
+	
+	  public void drawBoard(Cell[][] board, int cols, int rows) {
+		  boardPanel.setLayout(new GridLayout(rows, cols));
+
+		  for (int row = 0 ; row < 25; row++) {
+		    	for (int col = 0; col < 28; col++) {
+	              JLabel cell = new JLabel(getIcon(board[row][col]),JLabel.CENTER);
+	              cell.setMinimumSize(new Dimension(20,20));
+	              Border border = BorderFactory.createLineBorder(Color.BLACK, 1);
+	              cell.setBorder(border);
+	              boardPanel.add(cell);
+	          }
+	      }
+	      boardPanel.setMaximumSize(new Dimension(20*cols,20*rows));
+	      frame.setSize(575,575);
+	      frame.setVisible(true);
+	  }
+	  
+	  
+	  private ImageIcon getIcon(Cell cell) {
+		  if (cell.isWall()) {
+			  return new ImageIcon("src/wallCell.png");
+		  } else if (cell.getPlayer() != null) { //If cell contains player
+			  if (cell.getRoom() != null) { //If cell is in room
+				  if (cell.getPlayer().toString().equals("S")) {
+					  return new ImageIcon("src/missScarlettRoomCell.png");
+				  } else if (cell.getPlayer().toString().equals("M")) {
+					  return new ImageIcon("src/colonelMustardRoomCell.png");
+				  } else if (cell.getPlayer().toString().equals("W")) {
+					  return new ImageIcon("src/mrsWhiteRoomCell.png");
+				  } else if (cell.getPlayer().toString().equals("G")) {
+					  return new ImageIcon("src/mrGreenRoomCell.png");
+				  } else if (cell.getPlayer().toString().equals("P")) {
+					  return new ImageIcon("src/mrsPeacockRoomCell.png");
+				  } else {
+					  return new ImageIcon("src/professorPlumRoomCell.png");
+				  }
+			  } else {
+				  if (cell.getPlayer().toString().equals("S")) {
+					  return new ImageIcon("src/missScarlettEmptyCell.png");
+				  } else if (cell.getPlayer().toString().equals("M")) {
+					  return new ImageIcon("src/colonelMustardEmptyCell.png");
+				  } else if (cell.getPlayer().toString().equals("W")) {
+					  return new ImageIcon("src/mrsWhiteEmptyCell.png");
+				  } else if (cell.getPlayer().toString().equals("G")) {
+					  return new ImageIcon("src/mrGreenEmptyCell.png");
+				  } else if (cell.getPlayer().toString().equals("P")) {
+					  return new ImageIcon("src/mrsPeacockEmptyCell.png");
+				  } else {
+					  return new ImageIcon("src/professorPlumEmptyCell.png");
+				  }
+			  }
+		  } else if (cell.getRoom() != null) {
+			  if (cell.getWeapon() != null) {
+				  if (cell.getWeapon().toString().equals("l")) {
+					  return new ImageIcon("src/leadpipeCell.png");
+				  } else if (cell.getWeapon().toString().equals("c")){
+					  return new ImageIcon("src/candlestickCell.png");
+				  } else if (cell.getWeapon().toString().equals("d")){
+					  return new ImageIcon("src/daggerCell.png");
+				  } else if (cell.getWeapon().toString().equals("r")){
+					  return new ImageIcon("src/revolverCell.png");
+				  } else if (cell.getWeapon().toString().equals("s")){
+					  return new ImageIcon("src/spannerCell.png");
+				  } else {
+					  return new ImageIcon("src/ropeCell.png");
+				  }
+			  } else {
+			  return new ImageIcon("src/roomCell.png");
+			  }
+		  } else {
+			  return new ImageIcon("src/emptyCell.png");
+		  }
+	  }
 	
 	/**
 	 * Helper method for loading image icons.
