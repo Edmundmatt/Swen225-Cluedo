@@ -28,7 +28,30 @@ public class GUITest {
 	private static ImageIcon diceFive = makeImageIcon("inverted-dice-5.png");
 	private static ImageIcon diceSix = makeImageIcon("inverted-dice-6.png");
 	
+	private static ImageIcon unknown = makeImageIcon("unknown.png");
+	
 	private static ImageIcon ballroom = makeImageIcon("ballroom.png");
+	private static ImageIcon billiardroom = makeImageIcon("billiardroom.png");
+	private static ImageIcon conversatory = makeImageIcon("conversatory.png");
+	private static ImageIcon diningroom = makeImageIcon("diningroom.png");
+	private static ImageIcon kitchen = makeImageIcon("kitchen.png");
+	private static ImageIcon library = makeImageIcon("library.png");
+	private static ImageIcon lounge = makeImageIcon("lounge.png");
+	private static ImageIcon study = makeImageIcon("study.png");
+
+	private static ImageIcon candlestick = makeImageIcon("candlestick.png");
+	private static ImageIcon dagger = makeImageIcon("dagger.png");
+	private static ImageIcon leadpipe = makeImageIcon("leadpipe.png");
+	private static ImageIcon revolver = makeImageIcon("revolver.png");
+	private static ImageIcon rope = makeImageIcon("rope.png");
+	
+	private static ImageIcon green = makeImageIcon("green.png");
+	private static ImageIcon mustard = makeImageIcon("mustard.png");
+	private static ImageIcon peacock = makeImageIcon("peacock.png");
+	private static ImageIcon plum = makeImageIcon("plum.png");
+	private static ImageIcon scarlett = makeImageIcon("scarlett.png");
+	private static ImageIcon white = makeImageIcon("white.png");
+	
 	
 	
 	private JLabel dice1;
@@ -100,16 +123,18 @@ public class GUITest {
 		frame.getContentPane().add(dice2);
 		
 		JLabel card1 = new JLabel("Card 1");
-		card1.setBounds(463, 27, 99, 153);
-		card1.setIcon(scaleImage(ballroom, card1.getWidth(), card1.getHeight()));
+		card1.setBounds(463, 30, 100, 153);
+		card1.setIcon(scaleImage(unknown, card1.getWidth(), card1.getHeight()));
 		frame.getContentPane().add(card1);
 		
 		JLabel card2 = new JLabel("Card 2");
-		card2.setBounds(462, 183, 101, 168);
+		card2.setBounds(463, 195, 100, 153);
+		card2.setIcon(scaleImage(unknown, card2.getWidth(), card2.getHeight()));
 		frame.getContentPane().add(card2);
 		
 		JLabel card3 = new JLabel("Card 3");
-		card3.setBounds(464, 351, 95, 139);
+		card3.setBounds(463, 358, 100, 153);
+		card3.setIcon(scaleImage(unknown, card3.getWidth(), card3.getHeight()));
 		frame.getContentPane().add(card3);
 		
 		JButton btnEndTurn = new JButton("End Turn");
@@ -117,10 +142,6 @@ public class GUITest {
 		frame.getContentPane().add(btnEndTurn);
 		
 		JButton btnMakeSuggestion = new JButton("Make Suggestion");
-		btnMakeSuggestion.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-			}
-		});
 		btnMakeSuggestion.setBounds(10, 453, 113, 30);
 		frame.getContentPane().add(btnMakeSuggestion);
 		
