@@ -2,13 +2,11 @@ import java.awt.EventQueue;
 import java.awt.GridLayout;
 import java.awt.Image;
 import java.awt.Label;
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
 
 import javax.swing.JFrame;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 import java.awt.BorderLayout;
@@ -21,8 +19,12 @@ import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JDialog;
 import javax.swing.JLabel;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
 import java.awt.event.ActionEvent;
 
 public class GUITest {
@@ -60,8 +62,6 @@ public class GUITest {
 	private static ImageIcon scarlett = makeImageIcon("scarlett.png");
 	private static ImageIcon white = makeImageIcon("white.png");
 	
-	
-	
 	private JLabel dice1;
 	private JLabel dice2;
 
@@ -93,9 +93,21 @@ public class GUITest {
 	 * Initialize the contents of the frame.
 	 */
 	private void initialize() {
-		frame = new JFrame();
+		frame = new JFrame("Cluedo");
 		frame.setBounds(100, 100, 609, 575);
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+		frame.addWindowListener(new WindowAdapter() {
+		    @Override
+		    public void windowClosing(WindowEvent we)
+		    { 
+		        String ObjButtons[] = {"Yes","No"};
+		        int PromptResult = JOptionPane.showOptionDialog(null,"Are you sure you want to exit?","Cluedo",JOptionPane.DEFAULT_OPTION,JOptionPane.WARNING_MESSAGE,null,ObjButtons,ObjButtons[1]);
+		        if(PromptResult==JOptionPane.YES_OPTION)
+		        {
+		            System.exit(0);
+		        }
+		    }
+		});
 		frame.getContentPane().setLayout(null);
 		
 		JMenuBar menuBar = new JMenuBar();
@@ -107,7 +119,7 @@ public class GUITest {
 		
 		JMenuItem mntmGame = new JMenuItem("Game");
 		menuBar.add(mntmGame);
-//		
+		
 		JPanel footerPanel = new JPanel();
 		footerPanel.setBounds(0, 505, 434, -104);
 		frame.getContentPane().add(footerPanel);
@@ -127,6 +139,14 @@ public class GUITest {
 
 		JButton btnRollDice = new JButton("Roll Dice");
 		btnRollDice.setBounds(166, 412, 113, 30);
+		btnRollDice.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				int[] list = Game.performDice();
+//				System.out.println(list[0] + "__" + list[1]);
+				dice1.setIcon(scaleImage(getCorrectDiceIcon(list[0]), dice1.getWidth(), dice1.getHeight()));
+				dice2.setIcon(scaleImage(getCorrectDiceIcon(list[1]), dice2.getWidth(), dice2.getHeight()));
+			}
+		});
 		frame.getContentPane().add(btnRollDice);
 		
 		dice1 = new JLabel();
@@ -156,14 +176,29 @@ public class GUITest {
 		
 		JButton btnEndTurn = new JButton("End Turn");
 		btnEndTurn.setBounds(10, 412, 113, 30);
+		btnEndTurn.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				System.out.println("End Turn check");
+			}
+		});
 		frame.getContentPane().add(btnEndTurn);
 		
 		JButton btnMakeSuggestion = new JButton("Make Suggestion");
 		btnMakeSuggestion.setBounds(10, 453, 113, 30);
+		btnMakeSuggestion.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				System.out.println("Suggestion check");
+			}
+		});
 		frame.getContentPane().add(btnMakeSuggestion);
 		
 		JButton btnMakeAccusation = new JButton("Make Accusation");
 		btnMakeAccusation.setBounds(10, 494, 113, 30);
+		btnMakeAccusation.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				System.out.println("Accusation check");
+			}
+		});
 		frame.getContentPane().add(btnMakeAccusation);
 	}
 	
@@ -181,7 +216,7 @@ public class GUITest {
 	          }
 	      }
 	      boardPanel.setMaximumSize(new Dimension(20*cols,20*rows));
-	      frame.setSize(575,575);
+	      frame.setSize(600,575);
 	      frame.setVisible(true);
 	  }
 	  
@@ -264,6 +299,23 @@ public class GUITest {
 				new ImageIcon(image.getImage().getScaledInstance(width, height, Image.SCALE_DEFAULT));
 		return imageIcon;
 	}
+	
+	private static ImageIcon getCorrectDiceIcon(int dice) {
+		if(dice == 1) {
+			return diceOne;
+		}else if(dice == 2) {
+			return diceTwo;
+		}else if(dice == 3) {
+			return diceThree;
+		}else if(dice == 4) {
+			return diceFour;
+		}else if(dice == 5) {
+			return diceFive;
+		}else {
+			return diceSix;
+		}
+	}
+
 }
 
 
