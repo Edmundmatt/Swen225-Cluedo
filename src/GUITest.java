@@ -25,6 +25,9 @@ public class GUITest {
 	private static ImageIcon diceFour = makeImageIcon("inverted-dice-4.png");
 	private static ImageIcon diceFive = makeImageIcon("inverted-dice-5.png");
 	private static ImageIcon diceSix = makeImageIcon("inverted-dice-6.png");
+	private static ImageIcon diceOneIcon;
+	private JLabel dice1;
+	private JLabel dice2;
 
 
 	/**
@@ -60,7 +63,7 @@ public class GUITest {
 		frame.getContentPane().setLayout(null);
 		
 		JMenuBar menuBar = new JMenuBar();
-		menuBar.setBounds(0, 0, 434, 21);
+		menuBar.setBounds(0, 0, 450, 21);
 		frame.getContentPane().add(menuBar);
 		
 		JMenuItem mntmFile = new JMenuItem("File");
@@ -81,14 +84,14 @@ public class GUITest {
 		btnRollDice.setBounds(23, 412, 73, 23);
 		frame.getContentPane().add(btnRollDice);
 		
-		JLabel dice1 = new JLabel();
+		dice1 = new JLabel();
 		dice1.setBounds(10, 446, 40, 40);
-		dice1.setIcon(diceOne);
+		dice1.setIcon(scaleImage(diceOne, 40, 40));
 		frame.getContentPane().add(dice1);
 		
-		JLabel dice2 = new JLabel();
+		dice2 = new JLabel();
 		dice2.setBounds(60, 446, 40, 40);
-		dice2.setIcon(diceTwo);
+		dice2.setIcon(scaleImage(diceOne, 40, 40));
 		frame.getContentPane().add(dice2);
 		
 		JLabel card1 = new JLabel("Card 1");
@@ -110,8 +113,20 @@ public class GUITest {
 	 * @return
 	 */
 	private static ImageIcon makeImageIcon(String filename) {
-		ImageIcon imageIcon = new ImageIcon(
-				new ImageIcon(filename).getImage().getScaledInstance(40, 40, Image.SCALE_DEFAULT));
+		// using the URL means the image loads when stored
+		// in a jar or expanded into individual files.
+		java.net.URL imageURL = GUITest.class.getResource(filename);
+
+		ImageIcon icon = null;
+		if (imageURL != null) {
+			icon = new ImageIcon(imageURL);
+		}
+		return icon;
+	}
+	
+	private static ImageIcon scaleImage(ImageIcon image, int width, int height) {
+		ImageIcon imageIcon = 
+				new ImageIcon(image.getImage().getScaledInstance(width, height, Image.SCALE_DEFAULT));
 		return imageIcon;
 	}
 	
