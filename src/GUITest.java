@@ -200,7 +200,9 @@ public class GUITest {
 		btnEndTurn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				g.nextPlayerTurn();
+				setInstructions("Player " + g.getPlayerTurn() + " please roll the dice!");
 				disableMovement();
+				btnRollDice.setEnabled(true);
 			}
 		});
 		frame.getContentPane().add(btnEndTurn);
