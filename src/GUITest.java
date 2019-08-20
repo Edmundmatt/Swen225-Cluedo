@@ -8,6 +8,7 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JRadioButton;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -17,6 +18,7 @@ import javax.swing.border.Border;
 import javax.swing.border.LineBorder;
 import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
+import javax.swing.ButtonGroup;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JDialog;
@@ -106,7 +108,8 @@ public class GUITest {
 			}
 		}
 		g.initialise(playerCount);
-		initialize();
+		characterSelectInit();
+//		initialize();
 	}
 
 	/**
@@ -272,6 +275,74 @@ public class GUITest {
 		disableMovement();
 	}
 	
+	private void characterSelectInit() {
+		frame = new JFrame("Cluedo Character Select");
+		frame.setBounds(100, 100, 350, 280);
+		frame.addWindowListener(new WindowAdapter() {
+		    @Override
+		    public void windowClosing(WindowEvent we)
+		    { 
+		        String ObjButtons[] = {"Yes","No"};
+		        int PromptResult = JOptionPane.showOptionDialog(null,"Are you sure you want to exit?","Cluedo",JOptionPane.DEFAULT_OPTION,JOptionPane.WARNING_MESSAGE,null,ObjButtons,ObjButtons[1]);
+		        if(PromptResult==JOptionPane.YES_OPTION)
+		        {
+		            System.exit(0);
+		        }
+		    }
+		});
+		frame.getContentPane().setLayout(null);
+		
+		JPanel panel = new JPanel();
+		panel.setBounds(103, 11, 118, 44);
+		frame.getContentPane().add(panel);
+		panel.setLayout(null);
+		
+		JLabel lblCharacterSelection = new JLabel("Character Selection");
+		lblCharacterSelection.setBounds(0, 0, 118, 44);
+		panel.add(lblCharacterSelection);
+		
+		JPanel panel_1 = new JPanel();
+		panel_1.setBounds(10, 50, 312, 170);
+		frame.getContentPane().add(panel_1);
+		panel_1.setLayout(null);
+		
+		JRadioButton rdbtnMrGreen = new JRadioButton("Rev. Green");
+		rdbtnMrGreen.setBounds(18, 23, 126, 23);
+		panel_1.add(rdbtnMrGreen);
+		
+		JRadioButton rdbtnColonelMustard = new JRadioButton("Colonel Mustard");
+		rdbtnColonelMustard.setBounds(168, 23, 138, 23);
+		panel_1.add(rdbtnColonelMustard);
+		
+		JRadioButton rdbtnMrsPeacock = new JRadioButton("Mrs. Peacock");
+		rdbtnMrsPeacock.setBounds(18, 58, 126, 23);
+		panel_1.add(rdbtnMrsPeacock);
+		
+		JRadioButton rdbtnProfessorPlum = new JRadioButton("Professor Plum");
+		rdbtnProfessorPlum.setBounds(168, 58, 138, 23);
+		panel_1.add(rdbtnProfessorPlum);
+		
+		JRadioButton rdbtnMissScarlett = new JRadioButton("Miss Scarlett");
+		rdbtnMissScarlett.setBounds(18, 92, 126, 23);
+		panel_1.add(rdbtnMissScarlett);
+		
+		JRadioButton rdbtnMrsWhite = new JRadioButton("Mrs. White");
+		rdbtnMrsWhite.setBounds(168, 92, 138, 23);
+		panel_1.add(rdbtnMrsWhite);
+		
+		//Add buttons to group
+		ButtonGroup bg = new ButtonGroup();
+		bg.add(rdbtnMrGreen);
+		bg.add(rdbtnColonelMustard);
+		bg.add(rdbtnMrsPeacock);
+		bg.add(rdbtnProfessorPlum);
+		bg.add(rdbtnMissScarlett);
+		bg.add(rdbtnMrsWhite);
+		
+		JButton btnConfirm = new JButton("Confirm");
+		btnConfirm.setBounds(105, 130, 89, 35);
+		panel_1.add(btnConfirm);
+	}
 	public void setInstructions(String content) {
 		instructions.setText(content);
 	}
