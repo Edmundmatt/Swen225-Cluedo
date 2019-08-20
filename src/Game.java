@@ -77,6 +77,21 @@ public class Game
 	  return (int)(Math. random()*12+1);
   }
   
+  public static int rollDiceSix() {
+	  Random random = new Random();
+	  return (int)(Math. random()*6+1);
+  }
+  
+  public static int[] performDice() {
+	  int firstRoll = Game.rollDiceSix();
+	  int scndRoll = Game.rollDiceSix();
+	  int turnMvmnt = firstRoll + scndRoll;
+	  
+	  
+	  System.out.println(firstRoll + " + " + scndRoll + " = " + turnMvmnt);
+	  return new int[] {firstRoll, scndRoll};
+  }
+  
   /*A main method that loop through turns of all players, taking inputs and calling other methods to run the game.*/
   public static void runTurn() {
 		 while(true) {
