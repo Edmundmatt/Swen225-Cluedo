@@ -59,4 +59,28 @@ public class Player
   public void setSkip(boolean b) {
 	  skip = b;
   }
+  
+  public String getName() {
+	  return this.name;
+  }
+  
+  public String getCharacterName() {
+	  if (this.name.equals("S")) {
+		  return "Miss Scarlett";
+	  } else if (this.name.equals("M")) {
+		  return "Colonel Mustard";
+	  } else if (this.name.equals("W")) {
+		  return "Miss White";
+	  } else if (this.name.equals("G")) {
+		  return "Mr Green";
+	  } else if (this.name.equals("P")) {
+		  return "Miss Peacock";
+	  } else {
+		  return "Professor Plum";
+	  }
+  }
+  
+  public void setName(String name) {
+	  this.name = name;
+  }
 }
