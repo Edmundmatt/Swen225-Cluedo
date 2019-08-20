@@ -190,6 +190,7 @@ public class Game
 	  p = playerList.get(playerTurn-1);
 	  System.out.println("makeAccusation check");
   }
+
   
   /*Method called when the game has finished*/
   public static void gameOver(Player p) {
@@ -214,10 +215,10 @@ public class Game
 			playerTurn = 1;
 		}
 		diceRolledThisTurn = false;
+		
   }
   
   /*Creates board and initialises to desired player count, also initialises cards and weapons*/
-  /*NOTE: In the GUI version these characters are overwritten by each player's selected characters*/
    public static void initialise(int playerCount){
 	    board = new Board();
 	    //Create new players add add them to the board - first three will always be added
@@ -332,6 +333,25 @@ public class Game
  	  
  	  
  	  //Rest of cards
+// 	  while(!rCards.isEmpty() && !wCards.isEmpty() && !cCards.isEmpty()) {
+// 		  for(Player p : playerList) {
+// 			  if(!rCards.isEmpty()) {
+// 				  randRoom = getRandCard(rCards);
+// 				  p.getPlayersCards().add(randRoom);
+// 				  rCards.remove(randRoom);
+// 			  }
+// 			  if(!wCards.isEmpty()) {
+// 				  randWeap = getRandCard(wCards);
+// 				  p.getPlayersCards().add(randWeap);
+// 				  wCards.remove(randWeap);
+// 			  }
+// 			  if(!cCards.isEmpty()) {
+// 				  randChar = getRandCard(cCards);
+// 				  p.getPlayersCards().add(randChar);
+// 				  cCards.remove(randChar);
+// 			  }
+// 			  
+// 		  }
  	  List<Card> allCards = new ArrayList<>();
  	  allCards.addAll(cCards);
  	  allCards.addAll(wCards);

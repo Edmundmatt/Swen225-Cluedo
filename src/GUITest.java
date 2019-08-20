@@ -27,7 +27,6 @@ import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
-import java.util.ArrayList;
 import java.awt.event.ActionEvent;
 
 public class GUITest {
@@ -80,8 +79,7 @@ public class GUITest {
 	private JButton moveEast;
 	private JButton moveWest;
 	private JButton btnRollDice;
-	
-	private boolean next;
+
 
 	/**
 	 * Launch the application.
@@ -115,7 +113,8 @@ public class GUITest {
 			}
 		}
 		g.initialise(playerCount);
-		characterSelectInit();
+//		characterSelectInit();
+		initialize();
 	}
 
 	/**
@@ -152,10 +151,13 @@ public class GUITest {
 		JPanel footerPanel = new JPanel();
 		footerPanel.setBounds(0, 505, 434, -104);
 		frame.getContentPane().add(footerPanel);
+		
+//		frame.getContentPane().setLayout(new BorderLayout());
 		  
 		
 		boardPanel = new JPanel();
 		boardPanel.setBounds(0, 21, 474, 420);
+		//boardPanel.setBackground(Color.red);
 		frame.getContentPane().add(boardPanel);
 		drawBoard();
 		frame.getContentPane().add(boardPanel);
@@ -185,6 +187,23 @@ public class GUITest {
 		dice2.setIcon(scaleImage(diceOne, dice2.getWidth(), dice2.getHeight()));
 		frame.getContentPane().add(dice2);
 		
+		/*		
+		card1 = new JLabel("Card 1");
+		card1.setBounds(493, 30, 100, 153);
+		card1.setIcon(scaleImage(unknown, card1.getWidth(), card1.getHeight()));
+		frame.getContentPane().add(card1);
+		
+		card2 = new JLabel("Card 2");
+		card2.setBounds(493, 196, 100, 153);
+		card2.setIcon(scaleImage(unknown, card2.getWidth(), card2.getHeight()));
+		frame.getContentPane().add(card2);
+		
+		card3 = new JLabel("Card 3");
+		card3.setBounds(493, 358, 100, 153);
+		card3.setIcon(scaleImage(unknown, card3.getWidth(), card3.getHeight()));
+		frame.getContentPane().add(card3);
+		*/
+		
 		card1 = new JLabel("Card 1");
 		card1.setBounds(493, 30, 100, 153);
 		card2 = new JLabel("Card 2");
@@ -204,7 +223,7 @@ public class GUITest {
 			public void actionPerformed(ActionEvent e) {
 				g.nextPlayerTurn();
 				updateCardDisplays();
-				setInstructions(g.getPlayers().get(g.getPlayerTurn()-1).getCharacterName() + " please roll the dice!");
+				setInstructions("Player " + g.getPlayerTurn() + " please roll the dice!");
 				disableMovement();
 				btnRollDice.setEnabled(true);
 			}
@@ -215,6 +234,7 @@ public class GUITest {
 		btnMakeSuggestion.setBounds(10, 503, 113, 30);
 		btnMakeSuggestion.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				g.makeSuggestion();
 				System.out.println("Suggestion check");
 			}
 		});
@@ -224,6 +244,7 @@ public class GUITest {
 		btnMakeAccusation.setBounds(10, 544, 113, 30);
 		btnMakeAccusation.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				g.makeAccusation();
 				System.out.println("Accusation check");
 			}
 		});
@@ -269,14 +290,13 @@ public class GUITest {
 		});
 		frame.getContentPane().add(moveWest);
 		
-		instructions = new JLabel(g.getPlayers().get(g.getPlayerTurn()-1).getCharacterName() + " please roll the dice!");
-		instructions.setBounds(15, 420, 400, 50);
+		instructions = new JLabel("Player " + g.getPlayerTurn() + " please roll the dice!");
+		instructions.setBounds(15, 420, 200, 50);
 		frame.getContentPane().add(instructions);
 		
 		disableMovement();
 	}
-
-	int playerNum = 1;
+	
 	private void characterSelectInit() {
 		frame = new JFrame("Cluedo Character Select");
 		frame.setBounds(100, 100, 350, 280);
@@ -295,12 +315,12 @@ public class GUITest {
 		frame.getContentPane().setLayout(null);
 		
 		JPanel panel = new JPanel();
-		panel.setBounds(10, 11, 300, 44);
+		panel.setBounds(103, 11, 118, 44);
 		frame.getContentPane().add(panel);
 		panel.setLayout(null);
 		
-		JLabel lblCharacterSelection = new JLabel("Player 1 please select your character:");
-		lblCharacterSelection.setBounds(50, 0, 300, 44);
+		JLabel lblCharacterSelection = new JLabel("Character Selection");
+		lblCharacterSelection.setBounds(0, 0, 118, 44);
 		panel.add(lblCharacterSelection);
 		
 		JPanel panel_1 = new JPanel();
@@ -341,65 +361,12 @@ public class GUITest {
 		bg.add(rdbtnMissScarlett);
 		bg.add(rdbtnMrsWhite);
 		
-
-		
 		JButton btnConfirm = new JButton("Confirm");
 		btnConfirm.setBounds(105, 130, 89, 35);
-		btnConfirm.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				Player p = g.getPlayers().get(playerNum-1);	
-				if (rdbtnMrGreen.isSelected()) {
-						p.setName("G");
-						rdbtnMrGreen.setEnabled(false);
-						playerNum++;
-						lblCharacterSelection.setText("Player " + playerNum + " please select your character:");
-					} else if (rdbtnColonelMustard.isSelected()) {
-						p.setName("M");
-						rdbtnColonelMustard.setEnabled(false);
-						playerNum++;
-						lblCharacterSelection.setText("Player " + playerNum + " please select your character:");
-					} else if (rdbtnMrsPeacock.isSelected()) {
-						p.setName("P");
-						rdbtnMrsPeacock.setEnabled(false);
-						playerNum++;
-						lblCharacterSelection.setText("Player " + playerNum + " please select your character:");
-					} else if (rdbtnProfessorPlum.isSelected()) {
-						p.setName("L");
-						rdbtnProfessorPlum.setEnabled(false);
-						playerNum++;
-						lblCharacterSelection.setText("Player " + playerNum + " please select your character:");
-					} else if (rdbtnMissScarlett.isSelected()) {
-						p.setName("S");
-						rdbtnMissScarlett.setEnabled(false);
-						playerNum++;
-						lblCharacterSelection.setText("Player " + playerNum + " please select your character:");
-					} else if (rdbtnMrsWhite.isSelected()) {
-						p.setName("W");
-						rdbtnMrsWhite.setEnabled(false);
-						playerNum++;
-						lblCharacterSelection.setText("Player " + playerNum + " please select your character:");
-					} else {
-						JOptionPane.showMessageDialog(frame,"Please select a character!");
-					}
-				
-				bg.clearSelection();
-				
-				if (playerNum > g.getPlayers().size()) {
-					frame.setVisible(false);
-					initialize();
-				}
-			}
-		});
 		panel_1.add(btnConfirm);
 	}
-	
-	
 	public void setInstructions(String content) {
 		instructions.setText(content);
-	}
-	
-	public void updateMovesLeft() {
-		setInstructions(g.getPlayers().get(g.getPlayerTurn()-1).getCharacterName() + " - you have " + g.getMovesLeft() + " turns left.");
 	}
 	
 	public void updateCardDisplays() {
@@ -412,6 +379,10 @@ public class GUITest {
 		card1.setIcon(scaleImage(firstCard, card1.getWidth(), card1.getHeight()));
 		card2.setIcon(scaleImage(scndCard, card2.getWidth(), card2.getHeight()));
 		card3.setIcon(scaleImage(thirdCard, card3.getWidth(), card3.getHeight()));
+	}
+	
+	public void updateMovesLeft() {
+		setInstructions("Player " + g.getPlayerTurn() + " - you have " + g.getMovesLeft() + " turns left.");
 	}
 	
 	private void disableMovement() {
@@ -432,14 +403,15 @@ public class GUITest {
 		if (g.getMovesLeft() > 0) {
 			g.movePlayer(direction);
 			updateMovesLeft();
-		} else {
+		}else {
 			g.nextPlayerTurn();
 			disableMovement();
 			btnRollDice.setEnabled(true);
-			setInstructions(g.getPlayers().get(g.getPlayerTurn()-1).getCharacterName() + " please roll the dice!");
+			setInstructions("Player " + g.getPlayerTurn() + " please roll the dice!");
 			updateCardDisplays();
 		}
 	}
+	
 	
 	
 	  public void drawBoard() {
@@ -536,8 +508,7 @@ public class GUITest {
 	}
 	
 	private static ImageIcon scaleImage(ImageIcon image, int width, int height) {
-		ImageIcon imageIcon = 
-				new ImageIcon(image.getImage().getScaledInstance(width, height, Image.SCALE_DEFAULT));
+		ImageIcon imageIcon = new ImageIcon(image.getImage().getScaledInstance(width, height, Image.SCALE_DEFAULT));
 		return imageIcon;
 	}
 	
@@ -622,3 +593,5 @@ public class GUITest {
 	}
 
 }
+
+
