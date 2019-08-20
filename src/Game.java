@@ -58,6 +58,8 @@ public class Game
   private static Suggestion suggestion;
   private static Accusation accusation;
   private static GUI gui;
+  private static boolean diceRolledThisTurn;
+  private static int movesLeft;
 
   //------------------------
   // CONSTRUCTOR
@@ -85,10 +87,7 @@ public class Game
   public static int[] performDice() {
 	  int firstRoll = Game.rollDiceSix();
 	  int scndRoll = Game.rollDiceSix();
-	  int turnMvmnt = firstRoll + scndRoll;
-	  
-	  
-	  System.out.println(firstRoll + " + " + scndRoll + " = " + turnMvmnt);
+	  movesLeft = firstRoll + scndRoll;
 	  return new int[] {firstRoll, scndRoll};
   }
   
@@ -155,14 +154,13 @@ public class Game
 //	 }
 //  }
   
-  public static void movePlayer(String direction) {
+  public void movePlayer(String direction) {
 	  Player p = playerList.get(playerTurn-1);
-	  board.movePlayer(p, direction);
+	  if (board.canMove(p, direction)) {
+		  board.movePlayer(p, direction);
+		  movesLeft--;
+	  }
   }
-  
-  
-
-  
   
   /*Method called when the game has finished*/
   public static void gameOver(Player p) {
@@ -176,12 +174,17 @@ public class Game
 	  System.out.println("The game is over!\n");
   }
   
+  public int getPlayerTurn() {
+	  return playerTurn;
+  }
+  
   /*Continue to the next player's turn*/
   public static void nextPlayerTurn() {
 	  playerTurn++;
 		if (playerTurn > playerList.size()) {
 			playerTurn = 1;
 		}
+		diceRolledThisTurn = false;
   }
   
   /*Creates board and initialises to desired player count, also initialises cards and weapons*/
@@ -219,7 +222,8 @@ public class Game
 		//Create all the cards and weapons
 		generateCards();
 		initialiseWeapons();
-		board.draw();
+		diceRolledThisTurn = false;
+		//board.draw();
   }
    
    /*Creates all the weapons in the game and adds them to the board in a random place*/
@@ -366,6 +370,10 @@ public class Game
 		   }
 	   }
 	   return null;
+   }
+   
+   public int getMovesLeft() {
+	   return movesLeft;
    }
 
    

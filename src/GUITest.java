@@ -65,6 +65,13 @@ public class GUITest {
 	
 	private JLabel dice1;
 	private JLabel dice2;
+	private JLabel instructions;
+	
+	private JButton moveNorth;
+	private JButton moveSouth;
+	private JButton moveEast;
+	private JButton moveWest;
+	private JButton btnRollDice;
 
 
 	/**
@@ -107,7 +114,7 @@ public class GUITest {
 	 */
 	private void initialize() {
 		frame = new JFrame("Cluedo");
-		frame.setBounds(100, 100, 630, 600);
+		frame.setBounds(100, 100, 630, 620);
 		frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 		frame.addWindowListener(new WindowAdapter() {
 		    @Override
@@ -148,25 +155,28 @@ public class GUITest {
 		frame.getContentPane().add(boardPanel);
 
 
-		JButton btnRollDice = new JButton("Roll Dice");
-		btnRollDice.setBounds(166, 442, 113, 30);
+		btnRollDice = new JButton("Roll Dice");
+		btnRollDice.setBounds(166, 462, 113, 30);
 		btnRollDice.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				int[] list = Game.performDice();
 //				System.out.println(list[0] + "__" + list[1]);
 				dice1.setIcon(scaleImage(getCorrectDiceIcon(list[0]), dice1.getWidth(), dice1.getHeight()));
 				dice2.setIcon(scaleImage(getCorrectDiceIcon(list[1]), dice2.getWidth(), dice2.getHeight()));
+				enableMovement();
+				btnRollDice.setEnabled(false);
+				updateMovesLeft();
 			}
 		});
 		frame.getContentPane().add(btnRollDice);
 		
 		dice1 = new JLabel();
-		dice1.setBounds(155, 488, 55, 55);
+		dice1.setBounds(155, 508, 55, 55);
 		dice1.setIcon(scaleImage(diceOne, dice1.getWidth(), dice1.getHeight()));
 		frame.getContentPane().add(dice1);
 		
 		dice2 = new JLabel();
-		dice2.setBounds(235, 488, 55, 55);
+		dice2.setBounds(235, 508, 55, 55);
 		dice2.setIcon(scaleImage(diceOne, dice2.getWidth(), dice2.getHeight()));
 		frame.getContentPane().add(dice2);
 		
@@ -186,16 +196,17 @@ public class GUITest {
 		frame.getContentPane().add(card3);
 		
 		JButton btnEndTurn = new JButton("End Turn");
-		btnEndTurn.setBounds(10, 442, 113, 30);
+		btnEndTurn.setBounds(10, 462, 113, 30);
 		btnEndTurn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				g.nextPlayerTurn();
+				disableMovement();
 			}
 		});
 		frame.getContentPane().add(btnEndTurn);
 		
 		JButton btnMakeSuggestion = new JButton("Make Suggestion");
-		btnMakeSuggestion.setBounds(10, 483, 113, 30);
+		btnMakeSuggestion.setBounds(10, 503, 113, 30);
 		btnMakeSuggestion.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				System.out.println("Suggestion check");
@@ -204,7 +215,7 @@ public class GUITest {
 		frame.getContentPane().add(btnMakeSuggestion);
 		
 		JButton btnMakeAccusation = new JButton("Make Accusation");
-		btnMakeAccusation.setBounds(10, 524, 113, 30);
+		btnMakeAccusation.setBounds(10, 544, 113, 30);
 		btnMakeAccusation.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				System.out.println("Accusation check");
@@ -212,46 +223,85 @@ public class GUITest {
 		});
 		frame.getContentPane().add(btnMakeAccusation);
 		
-		JButton moveNorth = new JButton(new ImageIcon("src/north.png"));
-		moveNorth.setBounds(360, 442, 45, 45);
+		moveNorth = new JButton(new ImageIcon("src/north.png"));
+		moveNorth.setBounds(360, 462, 45, 45);
 		moveNorth.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				g.movePlayer("north");
+				movePlayer("north");
 				drawBoard();
 			}
 		});
 		frame.getContentPane().add(moveNorth);
 		
-		JButton moveSouth = new JButton(new ImageIcon("src/south.png"));
-		moveSouth.setBounds(360, 490, 45, 45);
+		moveSouth = new JButton(new ImageIcon("src/south.png"));
+		moveSouth.setBounds(360, 510, 45, 45);
 		moveSouth.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				g.movePlayer("south");
+				movePlayer("south");
 				drawBoard();
 			}
 		});
 		frame.getContentPane().add(moveSouth);
 		
-		JButton moveEast = new JButton(new ImageIcon("src/east.png"));
-		moveEast.setBounds(408, 490, 45, 45);
+		moveEast = new JButton(new ImageIcon("src/east.png"));
+		moveEast.setBounds(408, 510, 45, 45);
 		moveEast.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				g.movePlayer("east");
+				movePlayer("east");
 				drawBoard();
 			}
 		});
 		frame.getContentPane().add(moveEast);
 		
-		JButton moveWest = new JButton(new ImageIcon("src/west.png"));
-		moveWest.setBounds(312, 490, 45, 45);
+		moveWest = new JButton(new ImageIcon("src/west.png"));
+		moveWest.setBounds(312, 510, 45, 45);
 		moveWest.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				g.movePlayer("west");
+				movePlayer("west");
 				drawBoard();
 			}
 		});
 		frame.getContentPane().add(moveWest);
 		
+		instructions = new JLabel("Player " + g.getPlayerTurn() + " please roll the dice!");
+		instructions.setBounds(15, 420, 200, 50);
+		frame.getContentPane().add(instructions);
+		
+		disableMovement();
+	}
+	
+	public void setInstructions(String content) {
+		instructions.setText(content);
+	}
+	
+	public void updateMovesLeft() {
+		setInstructions("Player " + g.getPlayerTurn() + " - you have " + g.getMovesLeft() + " turns left.");
+	}
+	
+	private void disableMovement() {
+		moveNorth.setEnabled(false);
+		moveSouth.setEnabled(false);
+		moveEast.setEnabled(false);
+		moveWest.setEnabled(false);
+	}
+	
+	private void enableMovement() {
+		moveNorth.setEnabled(true);
+		moveSouth.setEnabled(true);
+		moveEast.setEnabled(true);
+		moveWest.setEnabled(true);
+	}
+	
+	private void movePlayer(String direction) {
+		g.movePlayer(direction);
+		if (g.getMovesLeft() > 0) {
+			updateMovesLeft();
+		} else {
+			g.nextPlayerTurn();
+			disableMovement();
+			btnRollDice.setEnabled(true);
+			setInstructions("Player " + g.getPlayerTurn() + " please roll the dice!");
+		}
 	}
 	
 	
@@ -273,8 +323,6 @@ public class GUITest {
 	      boardPanel.setMaximumSize(new Dimension(25*cols,25*rows));
 	      frame.setVisible(true);
 	  }
-	  
-	//  public void redrawBoard(Cell[])
 	  
 	  
 	  private ImageIcon getIcon(Cell cell) {
@@ -355,6 +403,7 @@ public class GUITest {
 				new ImageIcon(image.getImage().getScaledInstance(width, height, Image.SCALE_DEFAULT));
 		return imageIcon;
 	}
+	
 	
 	private static ImageIcon getCorrectDiceIcon(int dice) {
 		if(dice == 1) {
