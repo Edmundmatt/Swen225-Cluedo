@@ -31,6 +31,7 @@ public class GUITest {
 
 	private JFrame frame;
 	private JPanel boardPanel;
+	private Game g;
 	private static ImageIcon diceOne = makeImageIcon("inverted-dice-1.png");
 	private static ImageIcon diceTwo = makeImageIcon("inverted-dice-2.png");
 	private static ImageIcon diceThree = makeImageIcon("inverted-dice-3.png");
@@ -86,6 +87,18 @@ public class GUITest {
 	 * Create the application.
 	 */
 	public GUITest() {
+		g = new Game();
+		int playerCount = 0;
+		while(true) {
+			String input = JOptionPane.showInputDialog("How many players? (3-6)");
+			if (input.chars().allMatch( Character::isDigit)) {
+				playerCount = Integer.parseInt(input);
+				if (playerCount >= 3 && playerCount <= 6) {
+					break;
+				}
+			}
+		}
+		g.initialise(playerCount);
 		initialize();
 	}
 
@@ -94,7 +107,7 @@ public class GUITest {
 	 */
 	private void initialize() {
 		frame = new JFrame("Cluedo");
-		frame.setBounds(100, 100, 609, 575);
+		frame.setBounds(100, 100, 630, 600);
 		frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 		frame.addWindowListener(new WindowAdapter() {
 		    @Override
@@ -128,17 +141,15 @@ public class GUITest {
 		  
 		
 		boardPanel = new JPanel();
-		boardPanel.setBounds(0, 21, 434, 380);
-		boardPanel.setBackground(Color.red);
+		boardPanel.setBounds(0, 21, 474, 420);
+		//boardPanel.setBackground(Color.red);
 		frame.getContentPane().add(boardPanel);
-		Game g = new Game();
-		g.initialise(6);
-		drawBoard(g.getBoard().retrieveBoard(),28,25);
+		drawBoard();
 		frame.getContentPane().add(boardPanel);
 
 
 		JButton btnRollDice = new JButton("Roll Dice");
-		btnRollDice.setBounds(166, 412, 113, 30);
+		btnRollDice.setBounds(166, 442, 113, 30);
 		btnRollDice.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				int[] list = Game.performDice();
@@ -150,41 +161,41 @@ public class GUITest {
 		frame.getContentPane().add(btnRollDice);
 		
 		dice1 = new JLabel();
-		dice1.setBounds(155, 458, 55, 55);
+		dice1.setBounds(155, 488, 55, 55);
 		dice1.setIcon(scaleImage(diceOne, dice1.getWidth(), dice1.getHeight()));
 		frame.getContentPane().add(dice1);
 		
 		dice2 = new JLabel();
-		dice2.setBounds(235, 458, 55, 55);
+		dice2.setBounds(235, 488, 55, 55);
 		dice2.setIcon(scaleImage(diceOne, dice2.getWidth(), dice2.getHeight()));
 		frame.getContentPane().add(dice2);
 		
 		JLabel card1 = new JLabel("Card 1");
-		card1.setBounds(463, 30, 100, 153);
+		card1.setBounds(493, 30, 100, 153);
 		card1.setIcon(scaleImage(unknown, card1.getWidth(), card1.getHeight()));
 		frame.getContentPane().add(card1);
 		
 		JLabel card2 = new JLabel("Card 2");
-		card2.setBounds(463, 195, 100, 153);
+		card2.setBounds(493, 196, 100, 153);
 		card2.setIcon(scaleImage(unknown, card2.getWidth(), card2.getHeight()));
 		frame.getContentPane().add(card2);
 		
 		JLabel card3 = new JLabel("Card 3");
-		card3.setBounds(463, 358, 100, 153);
+		card3.setBounds(493, 358, 100, 153);
 		card3.setIcon(scaleImage(unknown, card3.getWidth(), card3.getHeight()));
 		frame.getContentPane().add(card3);
 		
 		JButton btnEndTurn = new JButton("End Turn");
-		btnEndTurn.setBounds(10, 412, 113, 30);
+		btnEndTurn.setBounds(10, 442, 113, 30);
 		btnEndTurn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				System.out.println("End Turn check");
+				g.nextPlayerTurn();
 			}
 		});
 		frame.getContentPane().add(btnEndTurn);
 		
 		JButton btnMakeSuggestion = new JButton("Make Suggestion");
-		btnMakeSuggestion.setBounds(10, 453, 113, 30);
+		btnMakeSuggestion.setBounds(10, 483, 113, 30);
 		btnMakeSuggestion.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				System.out.println("Suggestion check");
@@ -193,32 +204,77 @@ public class GUITest {
 		frame.getContentPane().add(btnMakeSuggestion);
 		
 		JButton btnMakeAccusation = new JButton("Make Accusation");
-		btnMakeAccusation.setBounds(10, 494, 113, 30);
+		btnMakeAccusation.setBounds(10, 524, 113, 30);
 		btnMakeAccusation.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				System.out.println("Accusation check");
 			}
 		});
 		frame.getContentPane().add(btnMakeAccusation);
+		
+		JButton moveNorth = new JButton(new ImageIcon("src/north.png"));
+		moveNorth.setBounds(360, 442, 45, 45);
+		moveNorth.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				g.movePlayer("north");
+				drawBoard();
+			}
+		});
+		frame.getContentPane().add(moveNorth);
+		
+		JButton moveSouth = new JButton(new ImageIcon("src/south.png"));
+		moveSouth.setBounds(360, 490, 45, 45);
+		moveSouth.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				g.movePlayer("south");
+				drawBoard();
+			}
+		});
+		frame.getContentPane().add(moveSouth);
+		
+		JButton moveEast = new JButton(new ImageIcon("src/east.png"));
+		moveEast.setBounds(408, 490, 45, 45);
+		moveEast.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				g.movePlayer("east");
+				drawBoard();
+			}
+		});
+		frame.getContentPane().add(moveEast);
+		
+		JButton moveWest = new JButton(new ImageIcon("src/west.png"));
+		moveWest.setBounds(312, 490, 45, 45);
+		moveWest.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				g.movePlayer("west");
+				drawBoard();
+			}
+		});
+		frame.getContentPane().add(moveWest);
+		
 	}
 	
 	
-	  public void drawBoard(Cell[][] board, int cols, int rows) {
+	  public void drawBoard() {
+		  boardPanel.removeAll();
+		  int cols = 28;
+		  int rows = 25;
+		  Cell[][] board = g.getBoard().retrieveBoard();
 		  boardPanel.setLayout(new GridLayout(rows, cols));
-
-		  for (int row = 0 ; row < 25; row++) {
-		    	for (int col = 0; col < 28; col++) {
+		  for (int row = 0 ; row < rows; row++) {
+		    	for (int col = 0; col < cols; col++) {
 	              JLabel cell = new JLabel(getIcon(board[row][col]),JLabel.CENTER);
-	              cell.setMinimumSize(new Dimension(20,20));
+	              cell.setMinimumSize(new Dimension(25,25));
 	              Border border = BorderFactory.createLineBorder(Color.BLACK, 1);
 	              cell.setBorder(border);
 	              boardPanel.add(cell);
 	          }
 	      }
-	      boardPanel.setMaximumSize(new Dimension(20*cols,20*rows));
-	      frame.setSize(600,575);
+	      boardPanel.setMaximumSize(new Dimension(25*cols,25*rows));
 	      frame.setVisible(true);
 	  }
+	  
+	//  public void redrawBoard(Cell[])
 	  
 	  
 	  private ImageIcon getIcon(Cell cell) {

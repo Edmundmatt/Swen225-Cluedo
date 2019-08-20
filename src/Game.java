@@ -92,68 +92,75 @@ public class Game
 	  return new int[] {firstRoll, scndRoll};
   }
   
-  /*A main method that loop through turns of all players, taking inputs and calling other methods to run the game.*/
-  public static void runTurn() {
-		 while(true) {
-			 Player p = playerList.get(playerTurn-1);
-			 //If a player has already made an accusation - skip turn
-			 if(!p.getSkip()) {
-				 System.out.println("It's Player " + playerTurn + "'s turn! (your character is " + playerList.get(playerTurn-1).toString() + ")");
-				 System.out.println("Player " + p + "'s cards: ");
-				 System.out.println(p.playersCardsToString()); //Prints out character's cards
-				 int moves = rollDice();
-				 System.out.println("Dice roll: " + moves); //Prints out dice roll
-
-				 while (moves > 0) { //While player still has moves
-					 if (board.findPlayer(p).getRoom()==null) { //If play is not currently in a room
-						 System.out.println("You have " + moves + " moves left. Please enter a direction to move: (north etc)");
-						 System.out.println("Or make an accusation with the command 'accuse'.");
-					 }
-					 Scanner inputReader = new Scanner(System.in);
-					 String input = inputReader.nextLine();
-					 if (input.equals("suggest")) { //If player inputs suggest, creates suggestion after checking that they are in a room
-						 if (board.findPlayer(p).getRoom() == null) {
-							 System.out.println("You must be in a room to make a suggestion!");
-						 } else {
-							 suggestion = new Suggestion(p);
-							 suggestion.makeSuggestion(board.findPlayer(p).getRoom());
-							 nextPlayerTurn();
-						 }
-					 } else if (input.equals("accuse")) { //If player inputs accuse, creates accusation
-						 accusation = new Accusation(p);
-						 List<Card> accuseAttempt = accusation.makeAccusation();
-						 if(solution.equals(accuseAttempt)) { //If player accusation is correct, player wins and game ends
-							 gameOver(p);
-							 return;
-						 } else { //If player accusation is incorrect, player is out but can still refute suggestions
-							 System.out.println("Accuse attempt failure");
-							 System.out.println("Player " + p + " can no longer make suggestions or accusations!\n");
-							 outPlayers.add(p);
-							 p.setSkip(true);
-							 if(outPlayers.size() == playerList.size()) { //Checks if all players have made false accusations - and ends game if so
-								 gameOverLoss();
-								 return;
-							 }
-							 break;
-						 }
-					 } else if (board.canMove(p, input)){ //If input is a valid direction to move in
-						 board.movePlayer(p, input); //Move player
-						 board.draw();
-						 gui.drawBoard(board.retrieveBoard(), 28, 25); //Updates GUI board
-						 if (board.findPlayer(p).getRoom()==null) { //Subtracts move if player isn't in a room
-							 moves--;
-						 } else { //If player is in a room, they can move freely or make suggestions
-							 System.out.println("You're currently in the " + board.findPlayer(p).getRoom().getName() +".");
-							 System.out.println("You can move freely within the room - please enter a direction.");
-							 System.out.println("Or you can make a suggestion with the command 'suggest'.\n");
-						 }
-					 }
-				 }
-			 }
-		  gui.drawBoard(board.retrieveBoard(), 28, 25); //Updates GUI board
-		  nextPlayerTurn();
-	 }
+//  /*A main method that loop through turns of all players, taking inputs and calling other methods to run the game.*/
+//  public static void runTurn() {
+//		 while(true) {
+//			 Player p = playerList.get(playerTurn-1);
+//			 //If a player has already made an accusation - skip turn
+//			 if(!p.getSkip()) {
+//				 System.out.println("It's Player " + playerTurn + "'s turn! (your character is " + playerList.get(playerTurn-1).toString() + ")");
+//				 System.out.println("Player " + p + "'s cards: ");
+//				 System.out.println(p.playersCardsToString()); //Prints out character's cards
+//				 int moves = rollDice();
+//				 System.out.println("Dice roll: " + moves); //Prints out dice roll
+//
+//				 while (moves > 0) { //While player still has moves
+//					 if (board.findPlayer(p).getRoom()==null) { //If play is not currently in a room
+//						 System.out.println("You have " + moves + " moves left. Please enter a direction to move: (north etc)");
+//						 System.out.println("Or make an accusation with the command 'accuse'.");
+//					 }
+//					 Scanner inputReader = new Scanner(System.in);
+//					 String input = inputReader.nextLine();
+//					 if (input.equals("suggest")) { //If player inputs suggest, creates suggestion after checking that they are in a room
+//						 if (board.findPlayer(p).getRoom() == null) {
+//							 System.out.println("You must be in a room to make a suggestion!");
+//						 } else {
+//							 suggestion = new Suggestion(p);
+//							 suggestion.makeSuggestion(board.findPlayer(p).getRoom());
+//							 nextPlayerTurn();
+//						 }
+//					 } else if (input.equals("accuse")) { //If player inputs accuse, creates accusation
+//						 accusation = new Accusation(p);
+//						 List<Card> accuseAttempt = accusation.makeAccusation();
+//						 if(solution.equals(accuseAttempt)) { //If player accusation is correct, player wins and game ends
+//							 gameOver(p);
+//							 return;
+//						 } else { //If player accusation is incorrect, player is out but can still refute suggestions
+//							 System.out.println("Accuse attempt failure");
+//							 System.out.println("Player " + p + " can no longer make suggestions or accusations!\n");
+//							 outPlayers.add(p);
+//							 p.setSkip(true);
+//							 if(outPlayers.size() == playerList.size()) { //Checks if all players have made false accusations - and ends game if so
+//								 gameOverLoss();
+//								 return;
+//							 }
+//							 break;
+//						 }
+//					 } else if (board.canMove(p, input)){ //If input is a valid direction to move in
+//						 board.movePlayer(p, input); //Move player
+//						 board.draw();
+//						 gui.drawBoard(board.retrieveBoard(), 28, 25); //Updates GUI board
+//						 if (board.findPlayer(p).getRoom()==null) { //Subtracts move if player isn't in a room
+//							 moves--;
+//						 } else { //If player is in a room, they can move freely or make suggestions
+//							 System.out.println("You're currently in the " + board.findPlayer(p).getRoom().getName() +".");
+//							 System.out.println("You can move freely within the room - please enter a direction.");
+//							 System.out.println("Or you can make a suggestion with the command 'suggest'.\n");
+//						 }
+//					 }
+//				 }
+//			 }
+//		  gui.drawBoard(board.retrieveBoard(), 28, 25); //Updates GUI board
+//		  nextPlayerTurn();
+//	 }
+//  }
+  
+  public static void movePlayer(String direction) {
+	  Player p = playerList.get(playerTurn-1);
+	  board.movePlayer(p, direction);
   }
+  
+  
 
   
   
