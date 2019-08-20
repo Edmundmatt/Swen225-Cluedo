@@ -27,6 +27,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
+import java.util.ArrayList;
 import java.awt.event.ActionEvent;
 
 public class GUITest {
@@ -74,7 +75,8 @@ public class GUITest {
 	private JButton moveEast;
 	private JButton moveWest;
 	private JButton btnRollDice;
-
+	
+	private boolean next;
 
 	/**
 	 * Launch the application.
@@ -109,7 +111,6 @@ public class GUITest {
 		}
 		g.initialise(playerCount);
 		characterSelectInit();
-//		initialize();
 	}
 
 	/**
@@ -203,7 +204,7 @@ public class GUITest {
 		btnEndTurn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				g.nextPlayerTurn();
-				setInstructions("Player " + g.getPlayerTurn() + " please roll the dice!");
+				setInstructions(g.getPlayers().get(g.getPlayerTurn()-1).getCharacterName() + " please roll the dice!");
 				disableMovement();
 				btnRollDice.setEnabled(true);
 			}
@@ -268,13 +269,14 @@ public class GUITest {
 		});
 		frame.getContentPane().add(moveWest);
 		
-		instructions = new JLabel("Player " + g.getPlayerTurn() + " please roll the dice!");
-		instructions.setBounds(15, 420, 200, 50);
+		instructions = new JLabel(g.getPlayers().get(g.getPlayerTurn()-1).getCharacterName() + " please roll the dice!");
+		instructions.setBounds(15, 420, 400, 50);
 		frame.getContentPane().add(instructions);
 		
 		disableMovement();
 	}
-	
+
+	int playerNum = 1;
 	private void characterSelectInit() {
 		frame = new JFrame("Cluedo Character Select");
 		frame.setBounds(100, 100, 350, 280);
@@ -293,12 +295,12 @@ public class GUITest {
 		frame.getContentPane().setLayout(null);
 		
 		JPanel panel = new JPanel();
-		panel.setBounds(103, 11, 118, 44);
+		panel.setBounds(10, 11, 300, 44);
 		frame.getContentPane().add(panel);
 		panel.setLayout(null);
 		
-		JLabel lblCharacterSelection = new JLabel("Character Selection");
-		lblCharacterSelection.setBounds(0, 0, 118, 44);
+		JLabel lblCharacterSelection = new JLabel("Player 1 please select your character:");
+		lblCharacterSelection.setBounds(50, 0, 300, 44);
 		panel.add(lblCharacterSelection);
 		
 		JPanel panel_1 = new JPanel();
@@ -339,16 +341,65 @@ public class GUITest {
 		bg.add(rdbtnMissScarlett);
 		bg.add(rdbtnMrsWhite);
 		
+
+		
 		JButton btnConfirm = new JButton("Confirm");
 		btnConfirm.setBounds(105, 130, 89, 35);
+		btnConfirm.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				Player p = g.getPlayers().get(playerNum-1);	
+				if (rdbtnMrGreen.isSelected()) {
+						p.setName("G");
+						rdbtnMrGreen.setEnabled(false);
+						playerNum++;
+						lblCharacterSelection.setText("Player " + playerNum + " please select your character:");
+					} else if (rdbtnColonelMustard.isSelected()) {
+						p.setName("M");
+						rdbtnColonelMustard.setEnabled(false);
+						playerNum++;
+						lblCharacterSelection.setText("Player " + playerNum + " please select your character:");
+					} else if (rdbtnMrsPeacock.isSelected()) {
+						p.setName("P");
+						rdbtnMrsPeacock.setEnabled(false);
+						playerNum++;
+						lblCharacterSelection.setText("Player " + playerNum + " please select your character:");
+					} else if (rdbtnProfessorPlum.isSelected()) {
+						p.setName("L");
+						rdbtnProfessorPlum.setEnabled(false);
+						playerNum++;
+						lblCharacterSelection.setText("Player " + playerNum + " please select your character:");
+					} else if (rdbtnMissScarlett.isSelected()) {
+						p.setName("S");
+						rdbtnMissScarlett.setEnabled(false);
+						playerNum++;
+						lblCharacterSelection.setText("Player " + playerNum + " please select your character:");
+					} else if (rdbtnMrsWhite.isSelected()) {
+						p.setName("W");
+						rdbtnMrsWhite.setEnabled(false);
+						playerNum++;
+						lblCharacterSelection.setText("Player " + playerNum + " please select your character:");
+					} else {
+						JOptionPane.showMessageDialog(frame,"Please select a character!");
+					}
+				
+				bg.clearSelection();
+				
+				if (playerNum > g.getPlayers().size()) {
+					frame.setVisible(false);
+					initialize();
+				}
+			}
+		});
 		panel_1.add(btnConfirm);
 	}
+	
+	
 	public void setInstructions(String content) {
 		instructions.setText(content);
 	}
 	
 	public void updateMovesLeft() {
-		setInstructions("Player " + g.getPlayerTurn() + " - you have " + g.getMovesLeft() + " turns left.");
+		setInstructions(g.getPlayers().get(g.getPlayerTurn()-1).getCharacterName() + " - you have " + g.getMovesLeft() + " turns left.");
 	}
 	
 	private void disableMovement() {
@@ -373,7 +424,7 @@ public class GUITest {
 			g.nextPlayerTurn();
 			disableMovement();
 			btnRollDice.setEnabled(true);
-			setInstructions("Player " + g.getPlayerTurn() + " please roll the dice!");
+			setInstructions(g.getPlayers().get(g.getPlayerTurn()-1).getCharacterName() + " please roll the dice!");
 		}
 	}
 	
@@ -495,5 +546,3 @@ public class GUITest {
 	}
 
 }
-
-

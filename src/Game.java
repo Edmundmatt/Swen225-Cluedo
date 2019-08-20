@@ -188,6 +188,7 @@ public class Game
   }
   
   /*Creates board and initialises to desired player count, also initialises cards and weapons*/
+  /*NOTE: In the GUI version these characters are overwritten by each player's selected characters*/
    public static void initialise(int playerCount){
 	    board = new Board();
 	    //Create new players add add them to the board - first three will always be added
