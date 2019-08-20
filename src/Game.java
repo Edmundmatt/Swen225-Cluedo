@@ -4,13 +4,13 @@
 
 
 import java.util.*;
-import javafx.application.Application;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
-import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.layout.StackPane;
-import javafx.stage.Stage;
+//import javafx.application.Application;
+//import javafx.event.ActionEvent;
+//import javafx.event.EventHandler;
+//import javafx.scene.Scene;
+//import javafx.scene.control.Button;
+//import javafx.scene.layout.StackPane;
+//import javafx.stage.Stage;
 
 // line 61 "model.ump"
 // line 136 "model.ump"
@@ -57,7 +57,7 @@ public class Game
   private static ArrayList<Card> solution;
   private static Suggestion suggestion;
   private static Accusation accusation;
-  private static GUI gui;
+//  private static GUI gui;
   private static boolean diceRolledThisTurn;
   private static int movesLeft;
 
@@ -90,6 +90,19 @@ public class Game
 	  movesLeft = firstRoll + scndRoll;
 	  return new int[] {firstRoll, scndRoll};
   }
+  
+	public boolean playerInRoom() {
+		Player p = playerList.get(playerTurn-1);
+		if(Game.getBoard().findPlayer(p).getRoom() == null) {
+			return false;
+		}
+		return true;
+	}
+	
+	public static Player getCurrentPlayer() {
+		p = playerList.get(playerTurn - 1);
+		return p;
+	}
   
 //  /*A main method that loop through turns of all players, taking inputs and calling other methods to run the game.*/
 //  public static void runTurn() {
@@ -158,8 +171,24 @@ public class Game
 	  Player p = playerList.get(playerTurn-1);
 	  if (board.canMove(p, direction)) {
 		  board.movePlayer(p, direction);
-		  movesLeft--;
+		  if(!playerInRoom()) {
+			  movesLeft--;
+		  }
 	  }
+  }
+  
+  public void makeSuggestion() {
+	  p = playerList.get(playerTurn-1);
+	  if (board.findPlayer(p).getRoom() == null) {
+		  System.out.println("Must be in a room to make a suggestion");
+	  }else {
+		  
+	  }
+  }
+  
+  public void makeAccusation() {
+	  p = playerList.get(playerTurn-1);
+	  System.out.println("makeAccusation check");
   }
   
   /*Method called when the game has finished*/
@@ -303,24 +332,15 @@ public class Game
  	  
  	  
  	  //Rest of cards
- 	  while(!rCards.isEmpty() && !wCards.isEmpty() && !cCards.isEmpty()) {
+ 	  List<Card> allCards = new ArrayList<>();
+ 	  allCards.addAll(cCards);
+ 	  allCards.addAll(wCards);
+ 	  allCards.addAll(rCards);
+ 	  while(!allCards.isEmpty()){
  		  for(Player p : playerList) {
- 			  if(!rCards.isEmpty()) {
- 				  randRoom = getRandCard(rCards);
- 				  p.getPlayersCards().add(randRoom);
- 				  rCards.remove(randRoom);
- 			  }
- 			  if(!wCards.isEmpty()) {
- 				  randWeap = getRandCard(wCards);
- 				  p.getPlayersCards().add(randWeap);
- 				  wCards.remove(randWeap);
- 			  }
- 			  if(!cCards.isEmpty()) {
- 				  randChar = getRandCard(cCards);
- 				  p.getPlayersCards().add(randChar);
- 				  cCards.remove(randChar);
- 			  }
- 			  
+ 			  Card randCard = getRandCard(allCards);
+ 			  p.getPlayersCards().add(randCard);
+ 			  allCards.remove(randCard);
  		  }
  	  }
    }

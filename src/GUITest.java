@@ -46,8 +46,9 @@ public class GUITest {
 	
 	private static ImageIcon ballroom = makeImageIcon("ballroom.png");
 	private static ImageIcon billiardroom = makeImageIcon("billiardroom.png");
-	private static ImageIcon conversatory = makeImageIcon("conversatory.png");
+	private static ImageIcon conversatory = makeImageIcon("conservatory.png");
 	private static ImageIcon diningroom = makeImageIcon("diningroom.png");
+	private static ImageIcon hall = makeImageIcon("hall.png");
 	private static ImageIcon kitchen = makeImageIcon("kitchen.png");
 	private static ImageIcon library = makeImageIcon("library.png");
 	private static ImageIcon lounge = makeImageIcon("lounge.png");
@@ -58,6 +59,7 @@ public class GUITest {
 	private static ImageIcon leadpipe = makeImageIcon("leadpipe.png");
 	private static ImageIcon revolver = makeImageIcon("revolver.png");
 	private static ImageIcon rope = makeImageIcon("rope.png");
+	private static ImageIcon spanner = makeImageIcon("spanner.png");
 	
 	private static ImageIcon green = makeImageIcon("green.png");
 	private static ImageIcon mustard = makeImageIcon("mustard.png");
@@ -69,6 +71,9 @@ public class GUITest {
 	private JLabel dice1;
 	private JLabel dice2;
 	private JLabel instructions;
+	private JLabel card1;
+	private JLabel card2;
+	private JLabel card3;
 	
 	private JButton moveNorth;
 	private JButton moveSouth;
@@ -147,13 +152,10 @@ public class GUITest {
 		JPanel footerPanel = new JPanel();
 		footerPanel.setBounds(0, 505, 434, -104);
 		frame.getContentPane().add(footerPanel);
-		
-//		frame.getContentPane().setLayout(new BorderLayout());
 		  
 		
 		boardPanel = new JPanel();
 		boardPanel.setBounds(0, 21, 474, 420);
-		//boardPanel.setBackground(Color.red);
 		frame.getContentPane().add(boardPanel);
 		drawBoard();
 		frame.getContentPane().add(boardPanel);
@@ -164,7 +166,6 @@ public class GUITest {
 		btnRollDice.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				int[] list = Game.performDice();
-//				System.out.println(list[0] + "__" + list[1]);
 				dice1.setIcon(scaleImage(getCorrectDiceIcon(list[0]), dice1.getWidth(), dice1.getHeight()));
 				dice2.setIcon(scaleImage(getCorrectDiceIcon(list[1]), dice2.getWidth(), dice2.getHeight()));
 				enableMovement();
@@ -184,19 +185,17 @@ public class GUITest {
 		dice2.setIcon(scaleImage(diceOne, dice2.getWidth(), dice2.getHeight()));
 		frame.getContentPane().add(dice2);
 		
-		JLabel card1 = new JLabel("Card 1");
+		card1 = new JLabel("Card 1");
 		card1.setBounds(493, 30, 100, 153);
-		card1.setIcon(scaleImage(unknown, card1.getWidth(), card1.getHeight()));
-		frame.getContentPane().add(card1);
-		
-		JLabel card2 = new JLabel("Card 2");
+		card2 = new JLabel("Card 2");
 		card2.setBounds(493, 196, 100, 153);
-		card2.setIcon(scaleImage(unknown, card2.getWidth(), card2.getHeight()));
-		frame.getContentPane().add(card2);
-		
-		JLabel card3 = new JLabel("Card 3");
+		card3 = new JLabel("Card 3");
 		card3.setBounds(493, 358, 100, 153);
-		card3.setIcon(scaleImage(unknown, card3.getWidth(), card3.getHeight()));
+		
+		updateCardDisplays();
+		
+		frame.getContentPane().add(card1);
+		frame.getContentPane().add(card2);
 		frame.getContentPane().add(card3);
 		
 		JButton btnEndTurn = new JButton("End Turn");
@@ -204,6 +203,7 @@ public class GUITest {
 		btnEndTurn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				g.nextPlayerTurn();
+				updateCardDisplays();
 				setInstructions(g.getPlayers().get(g.getPlayerTurn()-1).getCharacterName() + " please roll the dice!");
 				disableMovement();
 				btnRollDice.setEnabled(true);
@@ -402,6 +402,18 @@ public class GUITest {
 		setInstructions(g.getPlayers().get(g.getPlayerTurn()-1).getCharacterName() + " - you have " + g.getMovesLeft() + " turns left.");
 	}
 	
+	public void updateCardDisplays() {
+		//Return the correct image icons for the current player
+		Player currentPlayer = Game.getCurrentPlayer();
+		ImageIcon firstCard = getCorrectCard(currentPlayer.getPlayersCards().get(0));
+		ImageIcon scndCard = getCorrectCard(currentPlayer.getPlayersCards().get(1));
+		ImageIcon thirdCard = getCorrectCard(currentPlayer.getPlayersCards().get(2));
+
+		card1.setIcon(scaleImage(firstCard, card1.getWidth(), card1.getHeight()));
+		card2.setIcon(scaleImage(scndCard, card2.getWidth(), card2.getHeight()));
+		card3.setIcon(scaleImage(thirdCard, card3.getWidth(), card3.getHeight()));
+	}
+	
 	private void disableMovement() {
 		moveNorth.setEnabled(false);
 		moveSouth.setEnabled(false);
@@ -417,14 +429,15 @@ public class GUITest {
 	}
 	
 	private void movePlayer(String direction) {
-		g.movePlayer(direction);
 		if (g.getMovesLeft() > 0) {
+			g.movePlayer(direction);
 			updateMovesLeft();
 		} else {
 			g.nextPlayerTurn();
 			disableMovement();
 			btnRollDice.setEnabled(true);
 			setInstructions(g.getPlayers().get(g.getPlayerTurn()-1).getCharacterName() + " please roll the dice!");
+			updateCardDisplays();
 		}
 	}
 	
@@ -542,6 +555,69 @@ public class GUITest {
 			return diceFive;
 		}else {
 			return diceSix;
+		}
+	}
+	
+	private static ImageIcon getCorrectCard(Card card) {
+		if(card.getClass().equals(RoomCard.class)) {
+			if(card.equals(RoomCard.Ball_Room)) {
+				return ballroom;
+			}else if(card.equals(RoomCard.Billiard_Room)) {
+				return billiardroom;
+			}else if(card.equals(RoomCard.Conversatory)) {
+				return conversatory;
+			}else if(card.equals(RoomCard.Dining_Room)) {
+				return diningroom;
+			}else if(card.equals(RoomCard.Hall)) {
+				return hall;
+			}else if(card.equals(RoomCard.Kitchen)) {
+				return kitchen;
+			}else if(card.equals(RoomCard.Library)) {
+				return library;
+			}else if(card.equals(RoomCard.Lounge)) {
+				return lounge;
+			}else if(card.equals(RoomCard.Study)) {
+				return study;
+			}
+			else {
+				return unknown;
+			}
+		}else if(card.getClass().equals(WeaponCard.class)) {
+			if(card.equals(WeaponCard.Candlestick)) {
+				return candlestick;
+			}else if(card.equals(WeaponCard.Dagger)) {
+				return dagger;
+			}else if(card.equals(WeaponCard.Leadpipe)) {
+				return leadpipe;
+			}else if(card.equals(WeaponCard.Revolver)) {
+				return revolver;
+			}else if(card.equals(WeaponCard.Rope)) {
+				return rope;
+			}else if(card.equals(WeaponCard.Spanner)) {
+				return spanner;
+			}
+			else {
+				return unknown;
+			}
+		}else if(card.getClass().equals(CharacterCard.class)) {
+			if(card.equals(CharacterCard.Colonel_Mustard)) {
+				return mustard;
+			}else if(card.equals(CharacterCard.Miss_Scarlett)) {
+				return scarlett;
+			}else if(card.equals(CharacterCard.Mr_Green)) {
+				return green;
+			}else if(card.equals(CharacterCard.Mrs_Peacock)) {
+				return peacock;
+			}else if(card.equals(CharacterCard.Mrs_White)) {
+				return white;
+			}else if(card.equals(CharacterCard.Professor_Plum)) {
+				return plum;
+			}else {
+				return unknown;
+			}
+		}
+		else {
+			return unknown;
 		}
 	}
 
