@@ -4,16 +4,6 @@
 
 
 import java.util.*;
-//import javafx.application.Application;
-//import javafx.event.ActionEvent;
-//import javafx.event.EventHandler;
-//import javafx.scene.Scene;
-//import javafx.scene.control.Button;
-//import javafx.scene.layout.StackPane;
-//import javafx.stage.Stage;
-
-// line 61 "model.ump"
-// line 136 "model.ump"
 
 
 
@@ -57,7 +47,6 @@ public class Game
   private static ArrayList<Card> solution;
   private static Suggestion suggestion;
   private static Accusation accusation;
-//  private static GUI gui;
   private static boolean diceRolledThisTurn;
   private static int movesLeft;
 
@@ -167,7 +156,6 @@ public class Game
 //	 }
 //  }
   
-	/*Moves the current player in the specified direction*/
   public void movePlayer(String direction) {
 	  Player p = playerList.get(playerTurn-1);
 	  if (board.canMove(p, direction)) {
@@ -178,17 +166,8 @@ public class Game
 	  }
   }
   
-  public void makeSuggestion() {
-	  p = playerList.get(playerTurn-1);
-	  if (board.findPlayer(p).getRoom() == null) {
-		  System.out.println("Must be in a room to make a suggestion");
-	  }else {
-		  
-	  }
-  }
   
   public void makeAccusation() {
-	  p = playerList.get(playerTurn-1);
 	  System.out.println("makeAccusation check");
   }
   
@@ -337,9 +316,9 @@ public class Game
  	  allCards.addAll(cCards);
  	  allCards.addAll(wCards);
  	  allCards.addAll(rCards);
-// 	  while(!allCards.isEmpty()){
- 	  while(allCards.size() > 1) {
+ 	  while(!allCards.isEmpty()){
  		  for(Player p : playerList) {
+ 			  if(allCards.isEmpty()) break;
  			  Card randCard = getRandCard(allCards);
  			  p.getPlayersCards().add(randCard);
  			  allCards.remove(randCard);

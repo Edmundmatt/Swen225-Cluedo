@@ -64,18 +64,17 @@ public class Player
 	  return this.name;
   }
   
-  /*Retrieves the full name of the character based on the provided abbreviation*/
   public String getCharacterName() {
 	  if (this.name.equals("S")) {
 		  return "Miss Scarlett";
 	  } else if (this.name.equals("M")) {
 		  return "Colonel Mustard";
 	  } else if (this.name.equals("W")) {
-		  return "Mrs. White";
+		  return "Miss White";
 	  } else if (this.name.equals("G")) {
-		  return "Mr. Green";
+		  return "Mr Green";
 	  } else if (this.name.equals("P")) {
-		  return "Mrs. Peacock";
+		  return "Miss Peacock";
 	  } else {
 		  return "Professor Plum";
 	  }
