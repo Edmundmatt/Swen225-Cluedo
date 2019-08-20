@@ -167,6 +167,7 @@ public class Game
 //	 }
 //  }
   
+	/*Moves the current player in the specified direction*/
   public void movePlayer(String direction) {
 	  Player p = playerList.get(playerTurn-1);
 	  if (board.canMove(p, direction)) {

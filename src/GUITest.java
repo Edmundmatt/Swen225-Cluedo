@@ -75,13 +75,14 @@ public class GUITest {
 	private JLabel card2;
 	private JLabel card3;
 	
+	//Declaring these buttons as they are enabled/disabled during the game
 	private JButton moveNorth;
 	private JButton moveSouth;
 	private JButton moveEast;
 	private JButton moveWest;
 	private JButton btnRollDice;
 	
-	private boolean next;
+	private int playerNum = 1; //Used in character selection
 
 	/**
 	 * Launch the application.
@@ -168,9 +169,9 @@ public class GUITest {
 				int[] list = Game.performDice();
 				dice1.setIcon(scaleImage(getCorrectDiceIcon(list[0]), dice1.getWidth(), dice1.getHeight()));
 				dice2.setIcon(scaleImage(getCorrectDiceIcon(list[1]), dice2.getWidth(), dice2.getHeight()));
-				enableMovement();
-				btnRollDice.setEnabled(false);
-				updateMovesLeft();
+				enableMovement(); //Enables movement as player has rolled dice
+				btnRollDice.setEnabled(false); //Disables dice button as player can't roll dice again this turn
+				updateMovesLeft(); //Writes moves left to instruction panel
 			}
 		});
 		frame.getContentPane().add(btnRollDice);
@@ -229,6 +230,7 @@ public class GUITest {
 		});
 		frame.getContentPane().add(btnMakeAccusation);
 		
+		//Movement buttons
 		moveNorth = new JButton(new ImageIcon("src/north.png"));
 		moveNorth.setBounds(360, 462, 45, 45);
 		moveNorth.addActionListener(new ActionListener() {
@@ -269,14 +271,16 @@ public class GUITest {
 		});
 		frame.getContentPane().add(moveWest);
 		
+		//Sets initial instructions
 		instructions = new JLabel(g.getPlayers().get(g.getPlayerTurn()-1).getCharacterName() + " please roll the dice!");
 		instructions.setBounds(15, 420, 400, 50);
 		frame.getContentPane().add(instructions);
-				
+		
+		//Disables movement as first player must roll dice
 		disableMovement();
 	}
 
-	int playerNum = 1;
+	/*Creates character selection window and allows players to select their preferred cluedo character*/
 	private void characterSelectInit() {
 		frame = new JFrame("Cluedo Character Select");
 		frame.setBounds(100, 100, 350, 280);
@@ -294,11 +298,13 @@ public class GUITest {
 		});
 		frame.getContentPane().setLayout(null);
 		
+		//Initialises panel for character selection
 		JPanel panel = new JPanel();
 		panel.setBounds(10, 11, 300, 44);
 		frame.getContentPane().add(panel);
 		panel.setLayout(null);
 		
+		//Initialises instruction label
 		JLabel lblCharacterSelection = new JLabel("Player 1 please select your character:");
 		lblCharacterSelection.setBounds(50, 0, 300, 44);
 		panel.add(lblCharacterSelection);
@@ -308,7 +314,8 @@ public class GUITest {
 		frame.getContentPane().add(panel_1);
 		panel_1.setLayout(null);
 		
-		JRadioButton rdbtnMrGreen = new JRadioButton("Rev. Green");
+		//Initialises radio buttons for character selection
+		JRadioButton rdbtnMrGreen = new JRadioButton("Mr. Green");
 		rdbtnMrGreen.setBounds(18, 23, 126, 23);
 		panel_1.add(rdbtnMrGreen);
 		
@@ -341,18 +348,19 @@ public class GUITest {
 		bg.add(rdbtnMissScarlett);
 		bg.add(rdbtnMrsWhite);
 		
-
-		
+		//Creates confirm button
 		JButton btnConfirm = new JButton("Confirm");
 		btnConfirm.setBounds(105, 130, 89, 35);
 		btnConfirm.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				Player p = g.getPlayers().get(playerNum-1);	
-				if (rdbtnMrGreen.isSelected()) {
-						p.setName("G");
-						rdbtnMrGreen.setEnabled(false);
-						playerNum++;
-						lblCharacterSelection.setText("Player " + playerNum + " please select your character:");
+			
+			public void actionPerformed(ActionEvent e) { //If the confirm button is pressed
+				Player p = g.getPlayers().get(playerNum-1);	//Retrieve current player
+				
+				if (rdbtnMrGreen.isSelected()) { //If player chose Mr Green
+						p.setName("G"); //Set the player's abbreviated name to Mr Green's
+						rdbtnMrGreen.setEnabled(false); //Disable radio button
+						playerNum++; //Move to next player
+						lblCharacterSelection.setText("Player " + playerNum + " please select your character:"); //Update instructional box
 					} else if (rdbtnColonelMustard.isSelected()) {
 						p.setName("M");
 						rdbtnColonelMustard.setEnabled(false);
@@ -379,29 +387,30 @@ public class GUITest {
 						playerNum++;
 						lblCharacterSelection.setText("Player " + playerNum + " please select your character:");
 					} else {
-						JOptionPane.showMessageDialog(frame,"Please select a character!");
+						JOptionPane.showMessageDialog(frame,"Please select a character!"); //If no character was chosen, prompt the user to choose
 					}
 				
-				bg.clearSelection();
+				bg.clearSelection(); //Clears radio button selections
 				
-				if (playerNum > g.getPlayers().size()) {
-					frame.setVisible(false);
-					initialize();
+				if (playerNum > g.getPlayers().size()) { //If all players have chosen their desired character
+					frame.setVisible(false); //Close character selection window
+					initialize(); //Initialise main GUI
 				}
 			}
 		});
 		panel_1.add(btnConfirm);
 	}
 	
-	
+	/*Sets instruction label on UI to provided string*/
 	public void setInstructions(String content) {
 		instructions.setText(content);
 	}
 	
+	
+	/*Updates number of moves left and displays room that player current occupies*/
 	public void updateMovesLeft() {
 		if(g.playerInRoom()) {
-			setInstructions(g.getPlayers().get(g.getPlayerTurn()-1).getCharacterName() + " - you have " + g.getMovesLeft() 
-			+ " turns left. (Current Room: " + Game.getBoard().findPlayer(Game.getCurrentPlayer()).getRoom().getName() + ")");
+			setInstructions(g.getPlayers().get(g.getPlayerTurn()-1).getCharacterName() + " - you can move freely within the " + Game.getBoard().findPlayer(Game.getCurrentPlayer()).getRoom().getName() + ".");
 		}else {
 			setInstructions(g.getPlayers().get(g.getPlayerTurn()-1).getCharacterName() + " - you have " + g.getMovesLeft() + " turns left.");
 		}
@@ -419,6 +428,7 @@ public class GUITest {
 		card3.setIcon(scaleImage(thirdCard, card3.getWidth(), card3.getHeight()));
 	}
 	
+	/*Disables movement controls*/
 	private void disableMovement() {
 		moveNorth.setEnabled(false);
 		moveSouth.setEnabled(false);
@@ -426,6 +436,7 @@ public class GUITest {
 		moveWest.setEnabled(false);
 	}
 	
+	/*Enables movement controls*/
 	private void enableMovement() {
 		moveNorth.setEnabled(true);
 		moveSouth.setEnabled(true);
@@ -433,31 +444,33 @@ public class GUITest {
 		moveWest.setEnabled(true);
 	}
 	
+	/*Moves the player, and rolls over to the next turn if player is out of moves*/
 	private void movePlayer(String direction) {
-		if (g.getMovesLeft() > 0) {
+		if (g.getMovesLeft() > 1) {
 			g.movePlayer(direction);
 			updateMovesLeft();
 		} else {
+			//Begins next players turn and prompts them to roll dice
 			g.nextPlayerTurn();
-			disableMovement();
+			disableMovement(); 
 			btnRollDice.setEnabled(true);
 			setInstructions(g.getPlayers().get(g.getPlayerTurn()-1).getCharacterName() + " please roll the dice!");
 			updateCardDisplays();
 		}
 	}
 	
-	
+	  /*Retrieves board from game class and draws in GUI, called to update board when players move*/
 	  public void drawBoard() {
-		  boardPanel.removeAll();
+		  boardPanel.removeAll(); //Clears old version panel before drawing 
 		  int cols = 28;
 		  int rows = 25;
-		  Cell[][] board = g.getBoard().retrieveBoard();
-		  boardPanel.setLayout(new GridLayout(rows, cols));
-		  for (int row = 0 ; row < rows; row++) {
+		  Cell[][] board = g.getBoard().retrieveBoard(); //Retrieves game's current board layout
+		  boardPanel.setLayout(new GridLayout(rows, cols)); //Constructs gridlayout to board dimensions
+		  for (int row = 0 ; row < rows; row++) { //Iterates through rows/columns of board, drawing each cell individually
 		    	for (int col = 0; col < cols; col++) {
-	              JLabel cell = new JLabel(getIcon(board[row][col]),JLabel.CENTER);
+	              JLabel cell = new JLabel(getIcon(board[row][col]),JLabel.CENTER); //Calls getIcon method to decide which image to use for this cell
 	              cell.setMinimumSize(new Dimension(25,25));
-	              Border border = BorderFactory.createLineBorder(Color.BLACK, 1);
+	              Border border = BorderFactory.createLineBorder(Color.BLACK, 1); //Black border creates grid effect in board
 	              cell.setBorder(border);
 	              boardPanel.add(cell);
 	          }
@@ -466,7 +479,7 @@ public class GUITest {
 	      frame.setVisible(true);
 	  }
 	  
-	  
+	  /*Retrieves the appropriate imageIcon when drawing the board*/
 	  private ImageIcon getIcon(Cell cell) {
 		  if (cell.isWall()) {
 			  return new ImageIcon("src/wallCell.png");
