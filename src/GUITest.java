@@ -36,6 +36,7 @@ public class GUITest {
 	private JPanel boardPanel;
 	private Game g;
 	private Suggestion sugg;
+	private Accusation accu;
 	private static ImageIcon diceOne = makeImageIcon("inverted-dice-1.png");
 	private static ImageIcon diceTwo = makeImageIcon("inverted-dice-2.png");
 	private static ImageIcon diceThree = makeImageIcon("inverted-dice-3.png");
@@ -227,7 +228,9 @@ public class GUITest {
 		btnMakeAccusation.setBounds(10, 544, 113, 30);
 		btnMakeAccusation.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				System.out.println("Accusation check");
+				Player p = g.getPlayers().get(g.getPlayerTurn()-1);
+				accu = new Accusation(p, Game.getBoard().findPlayer(p).getRoom(), g.getPlayers().get(g.getPlayerTurn()-1).getCharacterName());
+				accu.makeAccusation();
 			}
 		});
 		frame.getContentPane().add(btnMakeAccusation);
